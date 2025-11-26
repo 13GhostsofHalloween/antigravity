@@ -13,6 +13,98 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
         rel="stylesheet">
+    <style>
+        /* 디버깅용 스타일: 섹션 구획 및 이름 표시 */
+        nav,
+        section,
+        footer {
+            border: 2px solid red !important;
+            position: relative !important;
+        }
+
+        /* 섹션 이름 라벨 공통 스타일 */
+        nav::before,
+        section::before,
+        footer::before {
+            background-color: red;
+            color: white;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* 각 섹션별 이름 지정 */
+        nav::before {
+            content: "Navigation";
+        }
+
+        #home::before {
+            content: "Hero Section";
+        }
+
+        #about::before {
+            content: "About Section";
+        }
+
+        #services::before {
+            content: "Services Section";
+        }
+
+        #features::before {
+            content: "Features Section";
+        }
+
+        #contact::before {
+            content: "Contact Section";
+        }
+
+        footer::before {
+            content: "Footer";
+        }
+
+        /* Hero 영역 구분 가이드 */
+        .hero-text {
+            border: 2px dashed #ff4444 !important;
+            position: relative;
+        }
+
+        .hero-text::before {
+            content: "Left Area (Text)";
+            position: absolute;
+            top: -24px;
+            left: 0;
+            background: #ff4444;
+            color: white;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px 4px 0 0;
+            z-index: 10000;
+        }
+
+        .hero-visual {
+            border: 2px dashed #4444ff !important;
+        }
+
+        .hero-visual::before {
+            content: "Right Area (Visual)";
+            position: absolute;
+            top: -24px;
+            left: 0;
+            background: #4444ff;
+            color: white;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px 4px 0 0;
+            z-index: 10000;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,11 +115,11 @@
                 <span class="logo-text">Becco<span class="logo-highlight">CRO</span></span>
             </div>
             <ul class="nav-menu" id="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#home" class="nav-link">홈</a></li>
                 <li><a href="#about" class="nav-link">회사소개</a></li>
                 <li><a href="#services" class="nav-link">서비스</a></li>
                 <li><a href="#features" class="nav-link">강점</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#contact" class="nav-link">문의하기</a></li>
             </ul>
             <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
                 <span></span>
@@ -55,19 +147,19 @@
                     <a href="#contact" class="btn btn-secondary">문의하기</a>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="floating-card card-1">
-                    <div class="card-icon">📊</div>
-                    <div class="card-text">Data Analysis</div>
-                </div>
-                <div class="floating-card card-2">
-                    <div class="card-icon">📝</div>
-                    <div class="card-text">Medical Writing</div>
-                </div>
-                <div class="floating-card card-3">
-                    <div class="card-icon">⚖️</div>
-                    <div class="card-text">Regulatory Affairs</div>
-                </div>
+        </div>
+        <div class="hero-visual">
+            <div class="floating-card card-1">
+                <div class="card-icon">📊</div>
+                <div class="card-text">Data Analysis</div>
+            </div>
+            <div class="floating-card card-2">
+                <div class="card-icon">📝</div>
+                <div class="card-text">Medical Writing</div>
+            </div>
+            <div class="floating-card card-3">
+                <div class="card-icon">⚖️</div>
+                <div class="card-text">Regulatory Affairs</div>
             </div>
         </div>
         <div class="scroll-indicator">
@@ -80,7 +172,7 @@
     <section class="about" id="about">
         <div class="container">
             <div class="section-header">
-                <span class="section-label">About Us</span>
+                <span class="section-label">COMPANY</span>
                 <h2 class="section-title">회사소개</h2>
             </div>
 
@@ -103,19 +195,22 @@
                     <div class="ceo-text">
                         <h3 class="ceo-title">CEO 인사말</h3>
                         <p class="ceo-greeting">
-                            안녕하십니까, BeccoCRO 대표이사 입니다.
+                            안녕하십니까, BeccoCRO 대표이사 정우진입니다.
                         </p>
                         <p class="ceo-message-text">
-                            BeccoCRO는 임상시험의 성공적인 수행을 위해 최선을 다하는 전문 CRO입니다.
-                            우리는 의약품 개발의 모든 단계에서 고객사와 함께하며,
-                            최고 수준의 전문성과 윤리성을 바탕으로 신뢰할 수 있는 서비스를 제공합니다.
+                            많은 중소기업과 벤처 기업들은 임상시험 규제의 변화, 높은 비용, 그리고 예측할 수 없는 실패의 위험 속에서 그 어느 때보다 많은 어려움을 겪고 있습니다. 이러한
+                            현실에 직면한 기업들이 마주하는 장애물을 우리는 단순히 외면하지 않습니다. 오히려 그들 각자의 상황을 깊이 이해하고, 실질적이고 혁신적인 해결책을 제공하는 것이
+                            우리의 사명입니다.
                         </p>
                         <p class="ceo-message-text">
-                            Medical Writing과 Regulatory Affairs 분야에서 축적된 경험과 노하우를 통해
-                            고객사의 성공적인 신약 개발을 지원하겠습니다.
+                            앞으로도 고객의 성공을 최우선으로 삼아 지속적인 도전과 혁신을 통해 바이오 헬스케어 분야에서 더욱 큰 가치를 창출해 나갈 것입니다. 하지만 그 무엇보다 중요한 것은
+                            이 모든 여정을 함께 해온 임직원들의 열정과 헌신입니다. 그들이 보여준 끊임없는 노력과 협력으로 오늘의 성장을 이룰 수 있었음에 깊은 감사의 마음을 전하고 싶습니다.
+                        </p>
+                        <p class="ceo-message-text">
+                            모든 구성원과의 신뢰와 협력을 바탕으로 벡코씨알오는 업계를 넘어서는 변화를 이끌어가고, 고객과 함께 성장하는 더 나은 미래를 만들어 나갈 것입니다.
                         </p>
                         <div class="ceo-signature">
-                            <span class="signature-name">대표이사</span>
+                            <span class="signature-name">대표이사 정우진</span>
                         </div>
                     </div>
                 </div>
@@ -167,16 +262,14 @@
                         <div class="mvc-icon">🎯</div>
                         <h3 class="mvc-title">Mission</h3>
                         <p class="mvc-description">
-                            임상시험의 전 과정에서 최고 수준의 전문 서비스를 제공하여
-                            고객사의 신약 개발 성공을 지원합니다.
+                            임상시험의 전 과정에서 최고 수준의 전문 서비스를 제공하여 고객사의 신약 개발 성공을 지원합니다.
                         </p>
                     </div>
                     <div class="mvc-card">
                         <div class="mvc-icon">🔭</div>
                         <h3 class="mvc-title">Vision</h3>
                         <p class="mvc-description">
-                            아시아 태평양 지역을 대표하는 글로벌 CRO로 성장하여
-                            인류 건강 증진에 기여합니다.
+                            아시아 태평양 지역을 대표하는 글로벌 CRO로 성장하여 인류 건강 증진에 기여합니다.
                         </p>
                     </div>
                     <div class="mvc-card">
@@ -197,7 +290,7 @@
     <section class="services" id="services">
         <div class="container">
             <div class="section-header">
-                <span class="section-label">Our Services</span>
+                <span class="section-label">SERVICES</span>
                 <h2 class="section-title">서비스</h2>
                 <p class="section-description">
                     BeccoCRO는 임상시험의 성공을 위한 전문 서비스를 제공합니다
@@ -266,8 +359,8 @@
     <section class="features" id="features">
         <div class="container">
             <div class="section-header">
-                <span class="section-label">Why Choose Us</span>
-                <h2 class="section-title">BeccoCRO의 강점</h2>
+                <span class="section-label">FEATURES</span>
+                <h2 class="section-title">강점</h2>
             </div>
 
             <div class="features-grid">
@@ -276,8 +369,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">전문 인력</h3>
                         <p class="feature-description">
-                            의학, 약학, 간호학 등 다양한 배경의 전문가들이
-                            풍부한 임상시험 경험을 바탕으로 최상의 서비스를 제공합니다.
+                            의학, 약학, 간호학 등 다양한 배경의 전문가들이 풍부한 임상시험 경험을 바탕으로 최상의 서비스를 제공합니다.
                         </p>
                     </div>
                 </div>
@@ -287,8 +379,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">신속한 대응</h3>
                         <p class="feature-description">
-                            고객사의 요구사항에 빠르고 정확하게 대응하며,
-                            프로젝트 일정을 철저히 관리합니다.
+                            고객사의 요구사항에 빠르고 정확하게 대응하며, 프로젝트 일정을 철저히 관리합니다.
                         </p>
                     </div>
                 </div>
@@ -298,8 +389,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">품질 보증</h3>
                         <p class="feature-description">
-                            국제 규제 기준(ICH-GCP)을 준수하며,
-                            체계적인 품질관리 시스템을 통해 최고 품질을 보장합니다.
+                            국제 규제 기준(ICH-GCP)을 준수하며, 체계적인 품질관리 시스템을 통해 최고 품질을 보장합니다.
                         </p>
                     </div>
                 </div>
@@ -309,8 +399,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">맞춤형 솔루션</h3>
                         <p class="feature-description">
-                            각 프로젝트의 특성을 고려한 맞춤형 서비스를 제공하여
-                            고객사의 목표 달성을 지원합니다.
+                            각 프로젝트의 특성을 고려한 맞춤형 서비스를 제공하여 고객사의 목표 달성을 지원합니다.
                         </p>
                     </div>
                 </div>
@@ -320,8 +409,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">비용 효율성</h3>
                         <p class="feature-description">
-                            합리적인 가격으로 높은 품질의 서비스를 제공하며,
-                            투명한 비용 구조를 유지합니다.
+                            합리적인 가격으로 높은 품질의 서비스를 제공하며, 투명한 비용 구조를 유지합니다.
                         </p>
                     </div>
                 </div>
@@ -329,10 +417,9 @@
                 <div class="feature-item">
                     <div class="feature-number">06</div>
                     <div class="feature-content">
-                        <h3 class="feature-title">지속적 파트너십</h3>
+                        <h3 class="feature-title">지속적 지원</h3>
                         <p class="feature-description">
-                            단순한 용역 제공을 넘어 장기적인 파트너로서
-                            고객사의 성공을 함께 만들어갑니다.
+                            프로젝트 시작부터 종료까지 전담 팀이 지속적으로 지원하며, 사후 관리도 철저히 수행합니다.
                         </p>
                     </div>
                 </div>
@@ -344,76 +431,64 @@
     <section class="contact" id="contact">
         <div class="container">
             <div class="section-header">
-                <span class="section-label">Get In Touch</span>
+                <span class="section-label">CONTACT</span>
                 <h2 class="section-title">문의하기</h2>
                 <p class="section-description">
-                    프로젝트 관련 문의사항이 있으시면 언제든지 연락주세요
+                    BeccoCRO에 대해 궁금하신 점이 있으시면 언제든지 문의해 주세요
                 </p>
             </div>
 
             <div class="contact-content">
                 <div class="contact-info">
                     <div class="info-card">
-                        <div class="info-icon">📧</div>
-                        <h3 class="info-title">Email</h3>
-                        <p class="info-text">info@beccocro.com</p>
+                        <div class="info-icon">📞</div>
+                        <h3 class="info-title">전화</h3>
+                        <p class="info-text">02-1234-5678</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">✉️</div>
+                        <h3 class="info-title">이메일</h3>
                         <p class="info-text">contact@beccocro.com</p>
                     </div>
-
-                    <div class="info-card">
-                        <div class="info-icon">📞</div>
-                        <h3 class="info-title">Phone</h3>
-                        <p class="info-text">+82-2-1234-5678</p>
-                        <p class="info-text">평일 09:00 - 18:00</p>
-                    </div>
-
                     <div class="info-card">
                         <div class="info-icon">📍</div>
-                        <h3 class="info-title">Address</h3>
-                        <p class="info-text">서울특별시 강남구</p>
-                        <p class="info-text">테헤란로 123</p>
+                        <h3 class="info-title">주소</h3>
+                        <p class="info-text">서울특별시 강남구<br>테헤란로 123</p>
                     </div>
                 </div>
 
                 <div class="contact-form-wrapper">
-                    <form class="contact-form" id="contact-form">
+                    <form class="contact-form">
                         <div class="form-group">
-                            <label for="name" class="form-label">이름</label>
-                            <input type="text" id="name" name="name" class="form-input" required>
+                            <label class="form-label">이름</label>
+                            <input type="text" class="form-input" required>
                         </div>
-
                         <div class="form-group">
-                            <label for="company" class="form-label">회사명</label>
-                            <input type="text" id="company" name="company" class="form-input" required>
+                            <label class="form-label">회사명</label>
+                            <input type="text" class="form-input">
                         </div>
-
                         <div class="form-group">
-                            <label for="email" class="form-label">이메일</label>
-                            <input type="email" id="email" name="email" class="form-input" required>
+                            <label class="form-label">이메일</label>
+                            <input type="email" class="form-input" required>
                         </div>
-
                         <div class="form-group">
-                            <label for="phone" class="form-label">연락처</label>
-                            <input type="tel" id="phone" name="phone" class="form-input" required>
+                            <label class="form-label">전화번호</label>
+                            <input type="tel" class="form-input">
                         </div>
-
                         <div class="form-group full-width">
-                            <label for="service" class="form-label">관심 서비스</label>
-                            <select id="service" name="service" class="form-select" required>
-                                <option value="">선택해주세요</option>
-                                <option value="mw">Medical Writing</option>
-                                <option value="ra">Regulatory Affairs</option>
-                                <option value="consulting">Clinical Consulting</option>
-                                <option value="other">기타</option>
+                            <label class="form-label">문의 유형</label>
+                            <select class="form-select">
+                                <option>Medical Writing</option>
+                                <option>Regulatory Affairs</option>
+                                <option>Clinical Consulting</option>
+                                <option>기타</option>
                             </select>
                         </div>
-
                         <div class="form-group full-width">
-                            <label for="message" class="form-label">문의 내용</label>
-                            <textarea id="message" name="message" class="form-textarea" rows="5" required></textarea>
+                            <label class="form-label">문의 내용</label>
+                            <textarea class="form-textarea" rows="5" required></textarea>
                         </div>
-
-                        <button type="submit" class="btn btn-primary btn-submit">문의 보내기</button>
+                        <button type="submit" class="btn btn-primary btn-submit">문의하기</button>
                     </form>
                 </div>
             </div>
@@ -425,41 +500,34 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3 class="footer-logo">Becco<span class="logo-highlight">CRO</span></h3>
-                    <p class="footer-description">
-                        임상시험의 미래를 함께 만들어가는<br>
-                        전문 CRO 파트너
-                    </p>
+                    <h3>BeccoCRO</h3>
+                    <p>임상시험의 미래를 함께 만들어갑니다</p>
                 </div>
-
                 <div class="footer-section">
-                    <h4 class="footer-title">Services</h4>
-                    <ul class="footer-links">
+                    <h3>서비스</h3>
+                    <ul>
                         <li><a href="#services">Medical Writing</a></li>
                         <li><a href="#services">Regulatory Affairs</a></li>
                         <li><a href="#services">Clinical Consulting</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-section">
-                    <h4 class="footer-title">Company</h4>
-                    <ul class="footer-links">
+                    <h3>회사</h3>
+                    <ul>
                         <li><a href="#about">회사소개</a></li>
-                        <li><a href="#about">연혁</a></li>
                         <li><a href="#features">강점</a></li>
+                        <li><a href="#contact">문의하기</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-section">
-                    <h4 class="footer-title">Contact</h4>
-                    <ul class="footer-links">
-                        <li>info@beccocro.com</li>
-                        <li>+82-2-1234-5678</li>
+                    <h3>연락처</h3>
+                    <ul>
+                        <li>Tel: 02-1234-5678</li>
+                        <li>Email: contact@beccocro.com</li>
                         <li>서울특별시 강남구 테헤란로 123</li>
                     </ul>
                 </div>
             </div>
-
             <div class="footer-bottom">
                 <p>&copy; 2024 BeccoCRO. All rights reserved.</p>
             </div>

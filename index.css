@@ -163,6 +163,7 @@ body {
     justify-content: center;
     overflow: hidden;
     padding-top: 80px;
+    z-index: 2;
 }
 
 .hero-background {
@@ -171,7 +172,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, hsl(210, 100%, 98%), hsl(280, 70%, 98%));
+    background: linear-gradient(90deg, var(--bg-secondary) 55%, hsl(210, 100%, 97%) 55%);
     z-index: -1;
 }
 
@@ -187,10 +188,14 @@ body {
 }
 
 .hero-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 55%;
+    height: 100%;
+    padding: 0 5%;
+    position: relative;
+    z-index: 2;
 }
 
 .hero-text {
@@ -262,8 +267,12 @@ body {
 }
 
 .hero-visual {
-    position: relative;
-    height: 400px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 45%;
+    height: 100%;
 }
 
 .floating-card {
@@ -327,9 +336,12 @@ body {
 }
 
 /* ========================================
-   Section Styles
+   Common Section Styles
    ======================================== */
 section {
+    position: relative;
+    z-index: 3;
+    background-color: white;
     padding: var(--spacing-xl) 0;
 }
 
@@ -369,7 +381,6 @@ section {
     background: var(--bg-secondary);
 }
 
-/* Company Overview */
 .company-overview {
     margin-bottom: var(--spacing-lg);
 }
@@ -811,46 +822,33 @@ section {
     margin-bottom: var(--spacing-lg);
 }
 
-.footer-logo {
-    font-size: var(--font-size-xl);
-    font-weight: 800;
+.footer-section h3 {
     margin-bottom: var(--spacing-sm);
 }
 
-.footer-description {
-    color: hsla(0, 0%, 100%, 0.7);
-    line-height: 1.8;
-}
-
-.footer-title {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--spacing-sm);
-    font-weight: 600;
-}
-
-.footer-links {
+.footer-section ul {
     list-style: none;
 }
 
-.footer-links li {
+.footer-section ul li {
     margin-bottom: var(--spacing-xs);
 }
 
-.footer-links a {
-    color: hsla(0, 0%, 100%, 0.7);
+.footer-section a {
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     transition: var(--transition);
 }
 
-.footer-links a:hover {
+.footer-section a:hover {
     color: white;
 }
 
 .footer-bottom {
     text-align: center;
     padding-top: var(--spacing-md);
-    border-top: 1px solid hsla(0, 0%, 100%, 0.1);
-    color: hsla(0, 0%, 100%, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 /* ========================================
@@ -860,7 +858,7 @@ section {
 
     0%,
     100% {
-        transform: translateY(0);
+        transform: translateY(0px);
     }
 
     50% {
@@ -897,7 +895,7 @@ section {
     }
 
     .hero-visual {
-        display: none;
+        height: 300px;
     }
 
     .ceo-content {
@@ -906,10 +904,6 @@ section {
 
     .timeline-item {
         grid-template-columns: 1fr;
-    }
-
-    .timeline::before {
-        left: 0;
     }
 
     .contact-content {
