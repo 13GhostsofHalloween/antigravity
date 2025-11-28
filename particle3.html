@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRO Particle Effects - 11 Variations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1a1a2e;
+        }
+
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        #message-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        #message-overlay h1 {
+            font-size: 3.5vw;
+            margin-bottom: 0.8rem;
+            color: #667eea;
+            font-weight: 600;
+            text-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+            letter-spacing: 0.1vw;
+        }
+
+        #message-overlay p {
+            font-size: 1.6vw;
+            opacity: 0.85;
+            line-height: 1.5;
+            color: #495057;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 2px solid #667eea;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+            backdrop-filter: blur(10px);
+            max-width: 95vw;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .controls button {
+            padding: 10px 16px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 50px;
+            color: #495057;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .controls button:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .controls button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+            color: white;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="nebulaCanvas"></canvas>
+
+    <div id="message-overlay">
+        <h1 id="effect-title">기술 기반 신뢰성</h1>
+        <p id="effect-desc">CRO의 안정적인 연구 환경이 만들어가는 미래</p>
+    </div>
+
+    <div class="controls">
+        <button class="active" data-effect="nebula">Spherical Nebula</button>
+        <button data-effect="constellation">Constellation</button>
+        <button data-effect="aurora">Aurora Wave</button>
+        <button data-effect="neural">Neural Network</button>
+        <button data-effect="dna">DNA Helix</button>
+        <button data-effect="quantum">Quantum Field</button>
+        <button data-effect="galaxy">Spiral Galaxy</button>
+        <button data-effect="pulse">Pulse Ring</button>
+        <button data-effect="flow">Data Flow</button>
+        <button data-effect="cosmic">Cosmic Dust</button>
+        <button data-effect="vortex">Energy Vortex</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('nebulaCanvas');
+        const ctx = canvas.getContext('2d');
+        const titleEl = document.getElementById('effect-title');
+        const descEl = document.getElementById('effect-desc');
+
+        let particles = [];
+        let currentEffect = 'nebula';
+        let animationTime = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const effectConfig = {
+            nebula: { title: '기술 기반 신뢰성', desc: 'CRO의 안정적인 연구 환경이 만들어가는 미래', count: 200, color: 'rgba(102, 126, 234, ' },
+            constellation: { title: '연결된 지식 네트워크', desc: '전문가들의 협력으로 만들어지는 혁신', count: 150, color: 'rgba(118, 75, 162, ' },
+            aurora: { title: '데이터의 흐름', desc: '실시간으로 흐르는 임상 데이터의 아름다움', count: 300, color: 'rgba(94, 114, 228, ' },
+            neural: { title: 'AI 기반 분석', desc: '인공지능이 만들어가는 정밀 의학', count: 180, color: 'rgba(103, 58, 183, ' },
+            dna: { title: '유전자 연구의 미래', desc: '생명의 코드를 해독하는 여정', count: 250, color: 'rgba(126, 87, 194, ' },
+            quantum: { title: '양자 수준의 정밀함', desc: '차세대 바이오 기술의 시작', count: 220, color: 'rgba(81, 45, 168, ' },
+            galaxy: { title: '무한한 가능성', desc: '끝없이 확장되는 연구 영역', count: 280, color: 'rgba(94, 53, 177, ' },
+            pulse: { title: '생명의 리듬', desc: '환자 중심의 맞춤형 치료', count: 200, color: 'rgba(142, 36, 170, ' },
+            flow: { title: '데이터 파이프라인', desc: '효율적인 임상 데이터 처리', count: 350, color: 'rgba(103, 58, 183, ' },
+            cosmic: { title: '우주적 규모의 연구', desc: '글로벌 임상 시험 네트워크', count: 400, color: 'rgba(94, 53, 177, ' },
+            vortex: { title: '에너지의 집중', desc: '혁신을 향한 집중된 노력', count: 180, color: 'rgba(81, 45, 168, ' }
+        };
+
+        class Particle {
+            constructor(effect) {
+                this.effect = effect;
+                this.baseColor = effectConfig[effect].color;
+                this.init();
+            }
+
+            init() {
+                const w = canvas.width, h = canvas.height;
+                this.x = (Math.random() - 0.5) * w * 0.8;
+                this.y = (Math.random() - 0.5) * h * 0.8;
+                this.z = Math.random() * 200;
+                this.size = 1 + Math.random() * 2;
+                this.opacity = 0.3 + Math.random() * 0.5;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+            }
+
+            update(time) {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.opacity = 0.3 + Math.sin(time * 0.001 + this.x * 0.01) * 0.3;
+            }
+
+            draw() {
+                const scale = 1 + (this.z / 400);
+                const currentSize = this.size * scale;
+                const currentOpacity = Math.max(0, Math.min(1, this.opacity * scale));
+
+                const displayX = canvas.width / 2 + this.x;
+                const displayY = canvas.height / 2 + this.y;
+
+                ctx.beginPath();
+                ctx.arc(displayX, displayY, currentSize, 0, Math.PI * 2);
+                ctx.fillStyle = this.baseColor + currentOpacity + ')';
+                ctx.shadowColor = this.baseColor + (currentOpacity * 1.5) + ')';
+                ctx.shadowBlur = currentSize * 3;
+                ctx.fill();
+            }
+        }
+
+        function createParticles(effect) {
+            particles = [];
+            const config = effectConfig[effect];
+            for (let i = 0; i < config.count; i++) {
+                particles.push(new Particle(effect));
+            }
+        }
+
+        function setEffect(effect) {
+            currentEffect = effect;
+            const config = effectConfig[effect];
+            titleEl.textContent = config.title;
+            descEl.textContent = config.desc;
+            createParticles(effect);
+
+            document.querySelectorAll('.controls button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-effect="${effect}"]`).classList.add('active');
+        }
+
+        function animate(time) {
+            animationTime = time;
+            ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.sort((a, b) => a.z - b.z);
+            for (const particle of particles) {
+                particle.update(time);
+                particle.draw();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        document.querySelectorAll('.controls button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setEffect(btn.dataset.effect);
+            });
+        });
+
+        createParticles('nebula');
+        animate(0);
+    </script>
+</body>
+
+</html>

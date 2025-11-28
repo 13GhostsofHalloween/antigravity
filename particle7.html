@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Minimal Connect Particles</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        const particles = [];
+        const PARTICLE_COUNT = 50;           // 최소로 줄임
+        const CONNECTION_DISTANCE = 620;      // 연결 기준 거리
+
+        // 파티클 클래스
+        class Particle {
+            constructor(x, y) {
+                this.x = x ?? Math.random() * width;
+                this.y = y ?? Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 1;
+                this.vy = (Math.random() - 0.5) * 1;
+                this.radius = 2;
+                this.connections = [];
+
+                // 색상 그라디언트 느낌
+                const hue = 210 + Math.random() * 40;
+                this.color = `hsl(${hue}, 70%, 60%)`;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // 벽 반사
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                // 연결 정보 초기화
+                this.connections = [];
+
+                // 근처 파티클 찾기
+                for (const other of particles) {
+                    if (other === this) continue;
+
+                    const dx = other.x - this.x;
+                    const dy = other.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < CONNECTION_DISTANCE) {
+                        this.connections.push({
+                            particle: other,
+                            distance: dist
+                        });
+                    }
+                }
+            }
+
+            draw() {
+                // 연결선
+                for (const conn of this.connections) {
+                    const opacity = 1 - conn.distance / CONNECTION_DISTANCE;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(conn.particle.x, conn.particle.y);
+                    ctx.strokeStyle = `rgba(102, 126, 234, ${opacity * .3})`;
+                    ctx.stroke();
+                }
+
+                // 파티클
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        // 초기 파티클 생성
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new Particle());
+        }
+
+        // 메인 루프
+        function animate() {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+            ctx.fillRect(0, 0, width, height);
+
+            for (const p of particles) {
+                p.update();
+                p.draw();
+            }
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 리사이즈 핸들링
+        window.addEventListener("resize", () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+    </script>
+
+</body>
+
+</html>

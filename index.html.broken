@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="BeccoCRO - 임상시험의 모든 단계를 지원하는 전문 CRO 기업. Medical Writing, Regulatory Affairs 전문 서비스 제공">
+    <title>BeccoCRO - Clinical Research Organization | 임상시험 전문 CRO</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="logo-text">Becco<span class="logo-highlight">CRO</span></span>
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">회사소개</a></li>
+                <li><a href="#services" class="nav-link">서비스</a></li>
+                <li><a href="#features" class="nav-link">강점</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-background"></div>
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="title-line">임상시험의 미래를</span>
+                    <span class="title-line gradient-text">함께 만들어갑니다</span>
+                </h1>
+                <p class="hero-subtitle">
+                    BeccoCRO는 임상시험의 모든 단계를 지원하는 전문 CRO입니다.<br>
+                    Medical Writing과 Regulatory Affairs 분야에서 최고의 전문성을 제공합니다.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#services" class="btn btn-primary">서비스 알아보기</a>
+                    <a href="#contact" class="btn btn-secondary">문의하기</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <div class="card-icon">📊</div>
+                    <div class="card-text">Data Analysis</div>
+                </div>
+                <div class="floating-card card-2">
+                    <div class="card-icon">📝</div>
+                    <div class="card-text">Medical Writing</div>
+                </div>
+                <div class="floating-card card-3">
+                    <div class="card-icon">⚖️</div>
+                    <div class="card-text">Regulatory Affairs</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll Down</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="mvc-icon">🎯</div>
+        <h3 class="mvc-title">Mission</h3>
+        <p class="mvc-description">
+            임상시험의 전 과정에서 최고 수준의 전문 서비스를 제공하여
+            고객사의 신약 개발 성공을 지원합니다.
+        </p>
+        </div>
+        <div class="mvc-card">
+            <div class="mvc-icon">🔭</div>
+            <h3 class="mvc-title">Vision</h3>
+            <p class="mvc-description">
+                아시아 태평양 지역을 대표하는 글로벌 CRO로 성장하여
+                인류 건강 증진에 기여합니다.
+            </p>
+        </div>
+        <div class="mvc-card">
+            <div class="mvc-icon">💎</div>
+            <h3 class="mvc-title">Core Values</h3>
+            <ul class="mvc-list">
+                <li><strong>전문성</strong> - 최고 수준의 전문 지식</li>
+                <li><strong>신뢰성</strong> - 투명하고 정직한 업무 수행</li>
+                <li><strong>혁신</strong> - 끊임없는 발전과 개선</li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Our Services</span>
+                <h2 class="section-title">서비스</h2>
+                <p class="section-description">
+                    BeccoCRO는 임상시험의 성공을 위한 전문 서비스를 제공합니다
+                </p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Medical Writing -->
+                <div class="service-card">
+                    <div class="service-icon">📝</div>
+                    <h3 class="service-title">Medical Writing (MW)</h3>
+                    <p class="service-description">
+                        임상시험 관련 모든 문서 작성 및 검토 서비스를 제공합니다.
+                    </p>
+                    <ul class="service-list">
+                        <li>임상시험계획서 (Protocol) 작성</li>
+                        <li>임상시험자 자료집 (IB) 작성</li>
+                        <li>임상시험 결과보고서 (CSR) 작성</li>
+                        <li>증례기록서 (CRF) 개발</li>
+                        <li>통계분석계획서 (SAP) 작성</li>
+                        <li>연구자 매뉴얼 작성</li>
+                    </ul>
+                    <div class="service-badge">전문 Medical Writer 팀</div>
+                </div>
+
+                <!-- Regulatory Affairs -->
+                <div class="service-card">
+                    <div class="service-icon">⚖️</div>
+                    <h3 class="service-title">Regulatory Affairs (RA)</h3>
+                    <p class="service-description">
+                        국내외 규제 기관 대응 및 허가 전략 수립을 지원합니다.
+                    </p>
+                    <ul class="service-list">
+                        <li>임상시험 계획 승인 신청 (IND)</li>
+                        <li>품목허가 신청 (NDA/BLA) 지원</li>
+                        <li>식약처 및 IRB 커뮤니케이션</li>
+                        <li>규제 전략 컨설팅</li>
+                        <li>CTD/eCTD 문서 작성</li>
+                        <li>허가 후 변경 관리</li>
+                    </ul>
+                    <div class="service-badge">규제 전문가 팀</div>
+                </div>
+
+                <!-- Consulting -->
+                <div class="service-card">
+                    <div class="service-icon">💡</div>
+                    <h3 class="service-title">Clinical Consulting</h3>
+                    <p class="service-description">
+                        임상시험 전략 수립부터 실행까지 전 과정을 컨설팅합니다.
+                    </p>
+                    <ul class="service-list">
+                        <li>임상개발 전략 수립</li>
+                        <li>프로토콜 디자인 컨설팅</li>
+                        <li>통계 분석 전략</li>
+                        <li>임상시험 타당성 평가</li>
+                        <li>프로젝트 관리</li>
+                        <li>품질 관리 시스템 구축</li>
+                    </ul>
+                    <div class="service-badge">경험 많은 컨설턴트</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Why Choose Us</span>
+                <h2 class="section-title">BeccoCRO의 강점</h2>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-number">01</div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">전문 인력</h3>
+                        <p class="feature-description">
+                            의학, 약학, 간호학 등 다양한 배경의 전문가들이
+                            풍부한 임상시험 경험을 바탕으로 최상의 서비스를 제공합니다.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-number">02</div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">신속한 대응</h3>
+                        <p class="feature-description">
+                            고객사의 요구사항에 빠르고 정확하게 대응하며,
+                            프로젝트 일정을 철저히 관리합니다.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-number">03</div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">품질 보증</h3>
+                        <p class="feature-description">
+                            국제 규제 기준(ICH-GCP)을 준수하며,
+                            체계적인 품질관리 시스템을 통해 최고 품질을 보장합니다.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-number">04</div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">맞춤형 솔루션</h3>
+                        <p class="feature-description">
+                            각 프로젝트의 특성을 고려한 맞춤형 서비스를 제공하여
+                            고객사의 목표 달성을 지원합니다.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-number">05</div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">비용 효율성</h3>
+                        <p class="feature-description">
+                            합리적인 가격으로 높은 품질의 서비스를 제공하며,
+                            투명한 비용 구조를 유지합니다.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-number">06</div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">지속적 파트너십</h3>
+                        <p class="feature-description">
+                            단순한 용역 제공을 넘어 장기적인 파트너로서
+                            고객사의 성공을 함께 만들어갑니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Get In Touch</span>
+                <h2 class="section-title">문의하기</h2>
+                <p class="section-description">
+                    프로젝트 관련 문의사항이 있으시면 언제든지 연락주세요
+                </p>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="info-card">
+                        <div class="info-icon">📧</div>
+                        <h3 class="info-title">Email</h3>
+                        <p class="info-text">info@beccocro.com</p>
+                        <p class="info-text">contact@beccocro.com</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">📞</div>
+                        <h3 class="info-title">Phone</h3>
+                        <p class="info-text">+82-2-1234-5678</p>
+                        <p class="info-text">평일 09:00 - 18:00</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">📍</div>
+                        <h3 class="info-title">Address</h3>
+                        <p class="info-text">서울특별시 강남구</p>
+                        <p class="info-text">테헤란로 123</p>
+                    </div>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <form class="contact-form" id="contact-form">
+                        <div class="form-group">
+                            <label for="name" class="form-label">이름</label>
+                            <input type="text" id="name" name="name" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="company" class="form-label">회사명</label>
+                            <input type="text" id="company" name="company" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">이메일</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label">연락처</label>
+                            <input type="tel" id="phone" name="phone" class="form-input" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="service" class="form-label">관심 서비스</label>
+                            <select id="service" name="service" class="form-select" required>
+                                <option value="">선택해주세요</option>
+                                <option value="mw">Medical Writing</option>
+                                <option value="ra">Regulatory Affairs</option>
+                                <option value="consulting">Clinical Consulting</option>
+                                <option value="other">기타</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="message" class="form-label">문의 내용</label>
+                            <textarea id="message" name="message" class="form-textarea" rows="5" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-submit">문의 보내기</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-logo">Becco<span class="logo-highlight">CRO</span></h3>
+                    <p class="footer-description">
+                        임상시험의 미래를 함께 만들어가는<br>
+                        전문 CRO 파트너
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-title">Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">Medical Writing</a></li>
+                        <li><a href="#services">Regulatory Affairs</a></li>
+                        <li><a href="#services">Clinical Consulting</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-title">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#about">회사소개</a></li>
+                        <li><a href="#about">연혁</a></li>
+                        <li><a href="#features">강점</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-title">Contact</h4>
+                    <ul class="footer-links">
+                        <li>info@beccocro.com</li>
+                        <li>+82-2-1234-5678</li>
+                        <li>서울특별시 강남구 테헤란로 123</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 BeccoCRO. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

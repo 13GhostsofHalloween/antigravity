@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeccoCRO Logo Particle Formation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        canvas {
+            display: block;
+            cursor: pointer;
+        }
+
+        .ui-overlay {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .controls button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .controls button.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+            box-shadow: 0 6px 24px rgba(255, 255, 255, 0.4);
+        }
+
+        .info-box {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 14px 28px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(20px);
+            font-size: 14px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading" id="loading">Loading logo...</div>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="ui-overlay" style="display: none;" id="ui">
+        <div class="title">BeccoCRO</div>
+        <div class="subtitle">Particle Logo Formation</div>
+        <div class="controls">
+            <button id="btn-form" class="active">Form Logo</button>
+            <button id="btn-scatter">Scatter</button>
+            <button id="btn-wave">Wave</button>
+            <button id="btn-explode">Explode</button>
+            <button id="btn-spiral">Spiral</button>
+        </div>
+    </div>
+
+    <div class="info-box" style="display: none;" id="info">
+        🖱️ Click to interact • <span id="particle-count">0</span> particles
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        const particles = [];
+        let logoPixels = [];
+        let mode = 'form'; // form, scatter, wave, explode, spiral
+        let mouseX = width / 2;
+        let mouseY = height / 2;
+        let time = 0;
+
+        class Particle {
+            constructor(index) {
+                this.index = index;
+                this.reset();
+                this.targetX = 0;
+                this.targetY = 0;
+                this.hasTarget = false;
+                this.baseX = 0;
+                this.baseY = 0;
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 3;
+                this.vy = (Math.random() - 0.5) * 3;
+                this.size = 1.5 + Math.random() * 2;
+                this.opacity = 0.6 + Math.random() * 0.4;
+
+                // 색상: 흰색과 밝은 색상
+                const colorType = Math.random();
+                if (colorType < 0.7) {
+                    this.color = `rgba(255, 255, 255, ${this.opacity})`;
+                } else {
+                    const hue = Math.random() * 60 + 180; // 파랑-청록
+                    this.color = `hsla(${hue}, 80%, 80%, ${this.opacity})`;
+                }
+            }
+
+            setTarget(x, y) {
+                this.targetX = x;
+                this.targetY = y;
+                this.baseX = x;
+                this.baseY = y;
+                this.hasTarget = true;
+            }
+
+            update() {
+                switch (mode) {
+                    case 'form':
+                        this.updateForm();
+                        break;
+                    case 'scatter':
+                        this.updateScatter();
+                        break;
+                    case 'wave':
+                        this.updateWave();
+                        break;
+                    case 'explode':
+                        this.updateExplode();
+                        break;
+                    case 'spiral':
+                        this.updateSpiral();
+                        break;
+                }
+
+                // 마우스 반발력
+                const mdx = this.x - mouseX;
+                const mdy = this.y - mouseY;
+                const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+                if (mdist < 150) {
+                    const force = (150 - mdist) / 150;
+                    this.vx += (mdx / mdist) * force * 3;
+                    this.vy += (mdy / mdist) * force * 3;
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // 속도 감쇠
+                this.vx *= 0.95;
+                this.vy *= 0.95;
+            }
+
+            updateForm() {
+                if (!this.hasTarget) return;
+
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist > 1) {
+                    this.vx += dx * 0.03;
+                    this.vy += dy * 0.03;
+                }
+            }
+
+            updateScatter() {
+                this.vx += (Math.random() - 0.5) * 0.5;
+                this.vy += (Math.random() - 0.5) * 0.5;
+
+                // 경계 반사
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            updateWave() {
+                if (!this.hasTarget) return;
+
+                const waveX = Math.sin(time * 0.002 + this.index * 0.01) * 30;
+                const waveY = Math.cos(time * 0.002 + this.index * 0.01) * 30;
+
+                this.targetX = this.baseX + waveX;
+                this.targetY = this.baseY + waveY;
+
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+
+                this.vx += dx * 0.02;
+                this.vy += dy * 0.02;
+            }
+
+            updateExplode() {
+                if (!this.hasTarget) return;
+
+                const dx = this.x - width / 2;
+                const dy = this.y - height / 2;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist > 0) {
+                    this.vx += (dx / dist) * 0.5;
+                    this.vy += (dy / dist) * 0.5;
+                }
+            }
+
+            updateSpiral() {
+                if (!this.hasTarget) return;
+
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const dx = this.x - centerX;
+                const dy = this.y - centerY;
+                const angle = Math.atan2(dy, dx);
+
+                this.vx += Math.cos(angle + Math.PI / 2) * 0.3;
+                this.vy += Math.sin(angle + Math.PI / 2) * 0.3;
+
+                // 중심으로 끌어당김
+                this.vx -= dx * 0.001;
+                this.vy -= dy * 0.001;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+
+                // 빛나는 효과
+                if (mode === 'form' || mode === 'wave') {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+        }
+
+        // 로고 이미지 로드
+        function loadLogo() {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+
+            img.onload = function () {
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+
+                // 로고 크기 조정 (화면의 50% 정도)
+                const scale = Math.min(width, height) * 0.5 / Math.max(img.width, img.height);
+                const logoWidth = img.width * scale;
+                const logoHeight = img.height * scale;
+
+                tempCanvas.width = logoWidth;
+                tempCanvas.height = logoHeight;
+
+                tempCtx.drawImage(img, 0, 0, logoWidth, logoHeight);
+                const imageData = tempCtx.getImageData(0, 0, logoWidth, logoHeight);
+                const pixels = imageData.data;
+
+                // 픽셀 샘플링
+                logoPixels = [];
+                const step = 3; // 샘플링 간격
+
+                for (let y = 0; y < logoHeight; y += step) {
+                    for (let x = 0; x < logoWidth; x += step) {
+                        const index = (y * logoWidth + x) * 4;
+                        const alpha = pixels[index + 3];
+
+                        if (alpha > 30) { // 투명하지 않은 픽셀
+                            logoPixels.push({
+                                x: x - logoWidth / 2 + width / 2,
+                                y: y - logoHeight / 2 + height / 2
+                            });
+                        }
+                    }
+                }
+
+                console.log(`Logo pixels sampled: ${logoPixels.length}`);
+                initParticles();
+
+                // UI 표시
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('ui').style.display = 'block';
+                document.getElementById('info').style.display = 'block';
+            };
+
+            img.onerror = function () {
+                console.error('Failed to load logo image');
+                document.getElementById('loading').textContent = 'Failed to load logo. Creating fallback...';
+                createFallbackPattern();
+            };
+
+            img.src = 'https://files.catbox.moe/i2jrhu.png';
+        }
+
+        // 이미지 로드 실패 시 대체 패턴
+        function createFallbackPattern() {
+            logoPixels = [];
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // "BECCO" 텍스트 패턴
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = 600;
+            tempCanvas.height = 200;
+
+            tempCtx.fillStyle = '#000';
+            tempCtx.font = 'bold 120px Arial';
+            tempCtx.textAlign = 'center';
+            tempCtx.textBaseline = 'middle';
+            tempCtx.fillText('BECCO', 300, 100);
+
+            const imageData = tempCtx.getImageData(0, 0, 600, 200);
+            const pixels = imageData.data;
+
+            for (let y = 0; y < 200; y += 3) {
+                for (let x = 0; x < 600; x += 3) {
+                    const index = (y * 600 + x) * 4;
+                    if (pixels[index + 3] > 128) {
+                        logoPixels.push({
+                            x: x - 300 + centerX,
+                            y: y - 100 + centerY
+                        });
+                    }
+                }
+            }
+
+            initParticles();
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('ui').style.display = 'block';
+            document.getElementById('info').style.display = 'block';
+        }
+
+        // 파티클 초기화
+        function initParticles() {
+            particles.length = 0;
+
+            for (let i = 0; i < logoPixels.length; i++) {
+                const particle = new Particle(i);
+                const pixel = logoPixels[i];
+                particle.setTarget(pixel.x, pixel.y);
+                particles.push(particle);
+            }
+
+            document.getElementById('particle-count').textContent = particles.length;
+        }
+
+        // 애니메이션 루프
+        function animate() {
+            time++;
+
+            // 배경 (트레일 효과)
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+
+            for (const particle of particles) {
+                particle.update();
+                particle.draw();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // 모드 변경
+        function setMode(newMode) {
+            mode = newMode;
+
+            document.querySelectorAll('.controls button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+
+        // 이벤트 리스너
+        canvas.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        canvas.addEventListener('click', () => {
+            // 클릭 시 Form 모드로 복귀
+            if (mode !== 'form') {
+                setMode('form');
+                document.getElementById('btn-form').classList.add('active');
+            }
+        });
+
+        document.getElementById('btn-form').addEventListener('click', () => {
+            setMode('form');
+            document.getElementById('btn-form').classList.add('active');
+        });
+
+        document.getElementById('btn-scatter').addEventListener('click', () => {
+            setMode('scatter');
+            document.getElementById('btn-scatter').classList.add('active');
+        });
+
+        document.getElementById('btn-wave').addEventListener('click', () => {
+            setMode('wave');
+            document.getElementById('btn-wave').classList.add('active');
+        });
+
+        document.getElementById('btn-explode').addEventListener('click', () => {
+            setMode('explode');
+            document.getElementById('btn-explode').classList.add('active');
+        });
+
+        document.getElementById('btn-spiral').addEventListener('click', () => {
+            setMode('spiral');
+            document.getElementById('btn-spiral').classList.add('active');
+        });
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            loadLogo(); // 리사이즈 시 로고 재로드
+        });
+
+        // 시작
+        loadLogo();
+        animate();
+    </script>
+</body>
+
+</html>

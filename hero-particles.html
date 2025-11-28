@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Particle Effects - BeccoCRO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a2e;
+            overflow: hidden;
+        }
+
+        #particle-container {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: #495057;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .ui-panel {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 2px solid #667eea;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+            backdrop-filter: blur(10px);
+            max-width: 95vw;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .ui-panel button {
+            border: none;
+            border-radius: 50px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .ui-panel button:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .ui-panel button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .info-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            padding: 16px 24px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #667eea;
+            backdrop-filter: blur(10px);
+            max-width: 90vw;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+        }
+
+        .info-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .info-desc {
+            font-size: 12px;
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        .info-message {
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .ui-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="particle-container"></div>
+
+    <div class="hero-content">
+        <h1>BeccoCRO</h1>
+        <p class="subtitle">신뢰할 수 있는 데이터 흐름, 정확한 임상 결과</p>
+    </div>
+
+    <div class="ui-panel">
+        <button id="btn-dataflow" class="active">Data Flow</button>
+        <button id="btn-neural">Neural Network</button>
+        <button id="btn-molecule">Molecular Grid</button>
+        <button id="btn-pulse">Pulse Rhythm</button>
+        <button id="btn-connection">Connection Web</button>
+        <button id="btn-helix">DNA Stream</button>
+        <button id="btn-quantum">Quantum Field</button>
+        <button id="btn-cellular">Cellular Pattern</button>
+        <button id="btn-signal">Signal Wave</button>
+        <button id="btn-matrix">Data Matrix</button>
+    </div>
+
+    <div class="info-box" id="info-box">
+        <div class="info-title">Data Flow Grid</div>
+        <div class="info-desc">데이터가 흐르는 느낌 - 클리니컬/바이오/데이터 기반 회사에 최적화</div>
+        <div class="info-message">💡 신뢰할 수 있는 데이터 흐름 · 정확한 임상 결과 처리 · 디지털 기반 CRO</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script>
+        const container = document.getElementById('particle-container');
+        const infoBox = document.getElementById('info-box');
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf8f9fa);
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 2000);
+        camera.position.set(0, 0, 350);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        const clock = new THREE.Clock();
+        const particleCount = 8000; // 중간 밀도
+
+        const basePositions = new Float32Array(particleCount * 3);
+        const renderPositions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const velocities = new Float32Array(particleCount * 3);
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(renderPositions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        // 전문적인 색상 팔레트 (파란색-보라색 계열)
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            const t = i / particleCount;
+            const col = new THREE.Color().setHSL(0.58 + 0.12 * t, 0.65, 0.45);
+            colors[i3] = col.r;
+            colors[i3 + 1] = col.g;
+            colors[i3 + 2] = col.b;
+        }
+
+        const material = new THREE.PointsMaterial({
+            size: 2.0,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.85,
+            depthWrite: false,
+            blending: THREE.NormalBlending
+        });
+
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        const MODE = {
+            DATAFLOW: 0,
+            NEURAL: 1,
+            MOLECULE: 2,
+            PULSE: 3,
+            CONNECTION: 4,
+            HELIX: 5,
+            QUANTUM: 6,
+            CELLULAR: 7,
+            SIGNAL: 8,
+            MATRIX: 9
+        };
+
+        let currentMode = MODE.DATAFLOW;
+        let currentTarget = null;
+        const targetShapes = new Array(10);
+        const gridX = new Float32Array(particleCount);
+        const gridZ = new Float32Array(particleCount);
+
+        // ===== 10개 Hero 최적화 효과 =====
+
+        // 1. Data Flow Grid - 데이터 흐름
+        function buildDataFlowTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const gridSize = Math.ceil(Math.sqrt(particleCount));
+            const spacing = 8;
+            let idx = 0;
+            for (let gz = 0; gz < gridSize && idx < particleCount; gz++) {
+                for (let gx = 0; gx < gridSize && idx < particleCount; gx++) {
+                    const i3 = idx * 3;
+                    const x = (gx - gridSize / 2) * spacing;
+                    const z = (gz - gridSize / 2) * spacing;
+                    arr[i3] = x;
+                    arr[i3 + 1] = 0;
+                    arr[i3 + 2] = z;
+                    gridX[idx] = x;
+                    gridZ[idx] = z;
+                    velocities[i3] = Math.random() * 0.5; // 흐름 속도
+                    idx++;
+                }
+            }
+            return arr;
+        }
+
+        // 2. Neural Network - 신경망 구조
+        function buildNeuralNetworkTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const layers = 5;
+            const nodesPerLayer = Math.ceil(particleCount / layers);
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const layer = Math.floor(i / nodesPerLayer);
+                const nodeInLayer = i % nodesPerLayer;
+                const layerSize = Math.sqrt(nodesPerLayer);
+
+                const x = (nodeInLayer % layerSize - layerSize / 2) * 15;
+                const y = (Math.floor(nodeInLayer / layerSize) - layerSize / 2) * 15;
+                const z = (layer - layers / 2) * 80;
+
+                arr[i3] = x + (Math.random() - 0.5) * 5;
+                arr[i3 + 1] = y + (Math.random() - 0.5) * 5;
+                arr[i3 + 2] = z;
+                velocities[i3] = layer;
+            }
+            return arr;
+        }
+
+        // 3. Molecular Grid - 분자 구조
+        function buildMolecularGridTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const latticeSize = Math.ceil(Math.pow(particleCount, 1 / 3));
+            const spacing = 12;
+            let idx = 0;
+
+            for (let z = 0; z < latticeSize && idx < particleCount; z++) {
+                for (let y = 0; y < latticeSize && idx < particleCount; y++) {
+                    for (let x = 0; x < latticeSize && idx < particleCount; x++) {
+                        const i3 = idx * 3;
+                        arr[i3] = (x - latticeSize / 2) * spacing;
+                        arr[i3 + 1] = (y - latticeSize / 2) * spacing;
+                        arr[i3 + 2] = (z - latticeSize / 2) * spacing;
+                        velocities[i3] = (x + y + z) % 3;
+                        idx++;
+                    }
+                }
+            }
+            return arr;
+        }
+
+        // 4. Pulse Rhythm - 맥박 리듬
+        function buildPulseRhythmTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const rings = 8;
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const ring = i % rings;
+                const radius = 20 + ring * 20;
+                const angle = (i / particleCount) * Math.PI * 2 * 3;
+
+                arr[i3] = radius * Math.cos(angle);
+                arr[i3 + 1] = radius * Math.sin(angle);
+                arr[i3 + 2] = (ring - rings / 2) * 8;
+                velocities[i3] = ring * 0.3;
+            }
+            return arr;
+        }
+
+        // 5. Connection Web - 연결망
+        function buildConnectionWebTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const nodes = 12;
+            const nodePositions = [];
+
+            // 주요 노드 생성
+            for (let i = 0; i < nodes; i++) {
+                const phi = Math.acos(2 * Math.random() - 1);
+                const theta = Math.random() * Math.PI * 2;
+                const r = 150;
+                nodePositions.push({
+                    x: r * Math.sin(phi) * Math.cos(theta),
+                    y: r * Math.sin(phi) * Math.sin(theta),
+                    z: r * Math.cos(phi)
+                });
+            }
+
+            // 파티클을 노드 주변에 배치
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const node = nodePositions[i % nodes];
+                const spread = 25;
+
+                arr[i3] = node.x + (Math.random() - 0.5) * spread;
+                arr[i3 + 1] = node.y + (Math.random() - 0.5) * spread;
+                arr[i3 + 2] = node.z + (Math.random() - 0.5) * spread;
+                velocities[i3] = i % nodes;
+            }
+            return arr;
+        }
+
+        // 6. DNA Stream - DNA 흐름
+        function buildDNAStreamTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const helixTurns = 8;
+            const height = 250;
+            const radius = 40;
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = (i / particleCount) * Math.PI * helixTurns;
+                const strand = (i % 2 === 0) ? 0 : Math.PI;
+
+                arr[i3] = radius * Math.cos(t + strand);
+                arr[i3 + 1] = (i / particleCount - 0.5) * height;
+                arr[i3 + 2] = radius * Math.sin(t + strand);
+                velocities[i3 + 1] = i / particleCount;
+            }
+            return arr;
+        }
+
+        // 7. Quantum Field - 양자장
+        function buildQuantumFieldTarget() {
+            const arr = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const theta = Math.random() * Math.PI * 2;
+                const r = Math.pow(Math.random(), 0.6) * 180;
+
+                arr[i3] = r * Math.sin(phi) * Math.cos(theta);
+                arr[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                arr[i3 + 2] = r * Math.cos(phi);
+                velocities[i3] = r / 180;
+            }
+            return arr;
+        }
+
+        // 8. Cellular Pattern - 세포 패턴
+        function buildCellularPatternTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const cells = 6;
+            const cellCenters = [];
+
+            for (let i = 0; i < cells; i++) {
+                const angle = (i / cells) * Math.PI * 2;
+                const radius = 100;
+                cellCenters.push({
+                    x: radius * Math.cos(angle),
+                    y: radius * Math.sin(angle),
+                    z: 0
+                });
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const cell = cellCenters[i % cells];
+                const localR = Math.pow(Math.random(), 0.5) * 40;
+                const localAngle = Math.random() * Math.PI * 2;
+
+                arr[i3] = cell.x + localR * Math.cos(localAngle);
+                arr[i3 + 1] = cell.y + localR * Math.sin(localAngle);
+                arr[i3 + 2] = (Math.random() - 0.5) * 30;
+                velocities[i3] = i % cells;
+            }
+            return arr;
+        }
+
+        // 9. Signal Wave - 신호파
+        function buildSignalWaveTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const waves = 10;
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = (i / particleCount) * Math.PI * 2 * waves;
+                const x = (i / particleCount - 0.5) * 400;
+                const amplitude = 60;
+
+                arr[i3] = x;
+                arr[i3 + 1] = amplitude * Math.sin(t);
+                arr[i3 + 2] = amplitude * Math.cos(t * 0.5);
+                velocities[i3] = i / particleCount;
+            }
+            return arr;
+        }
+
+        // 10. Data Matrix - 데이터 매트릭스
+        function buildDataMatrixTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const cols = Math.ceil(Math.sqrt(particleCount));
+            const rows = Math.ceil(particleCount / cols);
+            const spacing = 10;
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+
+                arr[i3] = (col - cols / 2) * spacing;
+                arr[i3 + 1] = (row - rows / 2) * spacing;
+                arr[i3 + 2] = Math.sin(col * 0.2) * 20 + Math.cos(row * 0.2) * 20;
+                velocities[i3 + 1] = row / rows;
+            }
+            return arr;
+        }
+
+        // 초기화
+        targetShapes[MODE.DATAFLOW] = buildDataFlowTarget();
+        targetShapes[MODE.NEURAL] = buildNeuralNetworkTarget();
+        targetShapes[MODE.MOLECULE] = buildMolecularGridTarget();
+        targetShapes[MODE.PULSE] = buildPulseRhythmTarget();
+        targetShapes[MODE.CONNECTION] = buildConnectionWebTarget();
+        targetShapes[MODE.HELIX] = buildDNAStreamTarget();
+        targetShapes[MODE.QUANTUM] = buildQuantumFieldTarget();
+        targetShapes[MODE.CELLULAR] = buildCellularPatternTarget();
+        targetShapes[MODE.SIGNAL] = buildSignalWaveTarget();
+        targetShapes[MODE.MATRIX] = buildDataMatrixTarget();
+
+        basePositions.set(targetShapes[MODE.DATAFLOW]);
+        renderPositions.set(targetShapes[MODE.DATAFLOW]);
+        geometry.attributes.position.needsUpdate = true;
+        currentTarget = targetShapes[MODE.DATAFLOW];
+
+        const effectInfo = {
+            [MODE.DATAFLOW]: {
+                title: 'Data Flow Grid',
+                desc: '데이터가 흐르는 느낌 - 클리니컬/바이오/데이터 기반 회사에 최적화',
+                message: '💡 신뢰할 수 있는 데이터 흐름 · 정확한 임상 결과 처리 · 디지털 기반 CRO'
+            },
+            [MODE.NEURAL]: {
+                title: 'Neural Network',
+                desc: 'AI 기반 신경망 구조 - 머신러닝과 데이터 분석의 시각화',
+                message: '🧠 지능형 데이터 분석 · AI 기반 임상 예측 · 스마트 CRO'
+            },
+            [MODE.MOLECULE]: {
+                title: 'Molecular Grid',
+                desc: '분자 구조 격자 - 바이오/제약 연구의 정밀함 표현',
+                message: '🔬 정밀한 분자 분석 · 바이오 연구 전문성 · 과학적 접근'
+            },
+            [MODE.PULSE]: {
+                title: 'Pulse Rhythm',
+                desc: '생체 리듬 맥박 - 생명과학과 헬스케어의 연결',
+                message: '💓 생명 중심 연구 · 환자 안전 최우선 · 바이탈 모니터링'
+            },
+            [MODE.CONNECTION]: {
+                title: 'Connection Web',
+                desc: '연결망 구조 - 글로벌 네트워크와 협업 시스템',
+                message: '🌐 글로벌 협력 네트워크 · 통합 데이터 플랫폼 · 연결된 CRO'
+            },
+            [MODE.HELIX]: {
+                title: 'DNA Stream',
+                desc: 'DNA 이중나선 흐름 - 유전자 연구와 바이오 혁신',
+                message: '🧬 유전체 분석 전문 · 바이오 혁신 리더 · 정밀 의료'
+            },
+            [MODE.QUANTUM]: {
+                title: 'Quantum Field',
+                desc: '양자장 효과 - 첨단 기술과 미래 지향적 이미지',
+                message: '⚛️ 차세대 기술 도입 · 혁신적 연구 방법론 · 미래형 CRO'
+            },
+            [MODE.CELLULAR]: {
+                title: 'Cellular Pattern',
+                desc: '세포 패턴 - 세포 치료와 재생 의학 연구',
+                message: '🦠 세포 치료 연구 · 재생 의학 전문 · 바이오 테라피'
+            },
+            [MODE.SIGNAL]: {
+                title: 'Signal Wave',
+                desc: '신호파 전달 - 실시간 데이터 전송과 모니터링',
+                message: '📡 실시간 데이터 전송 · 원격 모니터링 · 즉각적 대응'
+            },
+            [MODE.MATRIX]: {
+                title: 'Data Matrix',
+                desc: '데이터 매트릭스 - 체계적 데이터 관리와 분석',
+                message: '📊 체계적 데이터 관리 · 통계 분석 전문 · 증거 기반 의학'
+            }
+        };
+
+        function setMode(mode) {
+            currentMode = mode;
+            currentTarget = targetShapes[mode];
+
+            const info = effectInfo[mode];
+            document.querySelector('.info-title').textContent = info.title;
+            document.querySelector('.info-desc').textContent = info.desc;
+            document.querySelector('.info-message').textContent = info.message;
+
+            setActiveButton(mode);
+        }
+
+        function setActiveButton(mode) {
+            const buttonIds = ['btn-dataflow', 'btn-neural', 'btn-molecule', 'btn-pulse',
+                'btn-connection', 'btn-helix', 'btn-quantum', 'btn-cellular',
+                'btn-signal', 'btn-matrix'];
+            buttonIds.forEach((id, index) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (index === mode) el.classList.add('active');
+                    else el.classList.remove('active');
+                }
+            });
+        }
+
+        // 버튼 이벤트
+        document.getElementById('btn-dataflow').addEventListener('click', () => setMode(MODE.DATAFLOW));
+        document.getElementById('btn-neural').addEventListener('click', () => setMode(MODE.NEURAL));
+        document.getElementById('btn-molecule').addEventListener('click', () => setMode(MODE.MOLECULE));
+        document.getElementById('btn-pulse').addEventListener('click', () => setMode(MODE.PULSE));
+        document.getElementById('btn-connection').addEventListener('click', () => setMode(MODE.CONNECTION));
+        document.getElementById('btn-helix').addEventListener('click', () => setMode(MODE.HELIX));
+        document.getElementById('btn-quantum').addEventListener('click', () => setMode(MODE.QUANTUM));
+        document.getElementById('btn-cellular').addEventListener('click', () => setMode(MODE.CELLULAR));
+        document.getElementById('btn-signal').addEventListener('click', () => setMode(MODE.SIGNAL));
+        document.getElementById('btn-matrix').addEventListener('click', () => setMode(MODE.MATRIX));
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const t = clock.getElapsedTime();
+
+            // 느린 카메라 움직임
+            const R = 30;
+            camera.position.x = Math.sin(t * 0.05) * R;
+            camera.position.y = Math.cos(t * 0.04) * R * 0.3;
+            camera.lookAt(0, 0, 0);
+
+            // 부드러운 모핑
+            if (currentTarget) {
+                const lerpSpeed = 0.04; // 느리게
+                for (let i = 0; i < basePositions.length; i++) {
+                    basePositions[i] += (currentTarget[i] - basePositions[i]) * lerpSpeed;
+                }
+            }
+
+            // 모드별 애니메이션 (느린 속도)
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                let x = basePositions[i3];
+                let y = basePositions[i3 + 1];
+                let z = basePositions[i3 + 2];
+
+                switch (currentMode) {
+                    case MODE.DATAFLOW:
+                        const flowWave = Math.sin(0.05 * gridX[i] + t * 0.8) * 3 +
+                            Math.cos(0.05 * gridZ[i] - t * 0.6) * 3;
+                        y += flowWave;
+                        break;
+                    case MODE.NEURAL:
+                        const neuralPulse = Math.sin(t * 1.5 + velocities[i3] * 2) * 2;
+                        y += neuralPulse;
+                        break;
+                    case MODE.MOLECULE:
+                        const vibration = Math.sin(t * 2 + velocities[i3] * Math.PI) * 1.5;
+                        x += vibration;
+                        y += vibration * 0.7;
+                        break;
+                    case MODE.PULSE:
+                        const pulseScale = 1 + Math.sin(t * 1.2 - velocities[i3]) * 0.15;
+                        x *= pulseScale;
+                        y *= pulseScale;
+                        break;
+                    case MODE.CONNECTION:
+                        const connectionPulse = Math.sin(t + velocities[i3] * 0.5) * 3;
+                        const dist = Math.sqrt(x * x + y * y + z * z);
+                        const scale = 1 + connectionPulse / dist * 5;
+                        x *= scale;
+                        y *= scale;
+                        z *= scale;
+                        break;
+                    case MODE.HELIX:
+                        const helixRotation = t * 0.3;
+                        const hx = x * Math.cos(helixRotation) - z * Math.sin(helixRotation);
+                        const hz = x * Math.sin(helixRotation) + z * Math.cos(helixRotation);
+                        x = hx;
+                        z = hz;
+                        y += Math.sin(velocities[i3 + 1] * Math.PI * 4 + t) * 2;
+                        break;
+                    case MODE.QUANTUM:
+                        const quantumWave = Math.sin(t * 2 + velocities[i3] * Math.PI * 2) * 5;
+                        const qr = Math.sqrt(x * x + y * y + z * z);
+                        if (qr > 0) {
+                            x += x / qr * quantumWave;
+                            y += y / qr * quantumWave;
+                            z += z / qr * quantumWave;
+                        }
+                        break;
+                    case MODE.CELLULAR:
+                        const cellPulse = Math.sin(t * 1.5 + velocities[i3] * Math.PI) * 4;
+                        const angle = Math.atan2(y, x) + t * 0.2;
+                        const radius = Math.sqrt(x * x + y * y) + cellPulse;
+                        x = radius * Math.cos(angle);
+                        y = radius * Math.sin(angle);
+                        break;
+                    case MODE.SIGNAL:
+                        y += Math.sin(velocities[i3] * Math.PI * 10 + t * 2) * 5;
+                        z += Math.cos(velocities[i3] * Math.PI * 5 + t * 2) * 5;
+                        break;
+                    case MODE.MATRIX:
+                        y += Math.sin(t * 0.5 + velocities[i3 + 1] * Math.PI * 2) * 8;
+                        break;
+                }
+
+                renderPositions[i3] = x;
+                renderPositions[i3 + 1] = y;
+                renderPositions[i3 + 2] = z;
+            }
+
+            geometry.attributes.position.needsUpdate = true;
+            points.rotation.y += 0.0008; // 매우 느린 회전
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+
+</html>

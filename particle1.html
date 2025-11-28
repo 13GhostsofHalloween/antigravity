@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>27 Animated Particle Effects - BeccoCRO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #1a1a2e;
+            overflow: hidden;
+        }
+
+        #particle-container {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .ui-panel {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 6px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            border: 2px solid #667eea;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 95vw;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .ui-panel button {
+            border: none;
+            border-radius: 50px;
+            padding: 8px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .ui-panel button:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .ui-panel button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .caption {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #667eea;
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+            color: #495057;
+            max-width: 90vw;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .ui-panel {
+                grid-template-columns: repeat(3, 1fr);
+                border-radius: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="particle-container"></div>
+
+    <div class="ui-panel">
+        <button id="btn-wave" class="active">Wave Grid</button>
+        <button id="btn-lorenz">Lorenz</button>
+        <button id="btn-spiral">Spiral</button>
+        <button id="btn-dna">DNA</button>
+        <button id="btn-torus">Torus</button>
+        <button id="btn-sphere">Sphere</button>
+        <button id="btn-logo">Logo</button>
+        <button id="btn-cube">Cube</button>
+        <button id="btn-knot">Knot</button>
+        <button id="btn-heart">Heart</button>
+        <button id="btn-star">Star</button>
+        <button id="btn-cylinder">Cylinder</button>
+        <button id="btn-cone">Cone</button>
+        <button id="btn-mobius">Möbius</button>
+        <button id="btn-flower">Flower</button>
+        <button id="btn-vortex">Vortex</button>
+        <button id="btn-explosion">Explosion</button>
+        <button id="btn-pulse">Pulse Wave</button>
+        <button id="btn-tornado">Tornado</button>
+        <button id="btn-fountain">Fountain</button>
+        <button id="btn-ripple">Ripple</button>
+        <button id="btn-orbit">Orbit</button>
+        <button id="btn-firework">Firework</button>
+        <button id="btn-rain">Rain</button>
+        <button id="btn-snow">Snow</button>
+        <button id="btn-tunnel">Tunnel</button>
+        <button id="btn-infinity">Infinity</button>
+    </div>
+
+    <div class="caption" id="caption">
+        Wave Grid – 데이터 파형이 흐르는 그리드
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script>
+        const container = document.getElementById('particle-container');
+        const captionEl = document.getElementById('caption');
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffffff);
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 2000);
+        camera.position.set(0, 0, 300);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        const clock = new THREE.Clock();
+        const particleCount = 15000;
+
+        const basePositions = new Float32Array(particleCount * 3);
+        const renderPositions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const velocities = new Float32Array(particleCount * 3); // 애니메이션용
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(renderPositions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            const t = i / particleCount;
+            const col = new THREE.Color().setHSL(0.6 + 0.15 * t, 0.8, 0.4);
+            colors[i3] = col.r;
+            colors[i3 + 1] = col.g;
+            colors[i3 + 2] = col.b;
+        }
+
+        const material = new THREE.PointsMaterial({
+            size: 1.5,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.9,
+            depthWrite: false,
+            blending: THREE.NormalBlending
+        });
+
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        const MODE = {
+            WAVE: 0, LORENZ: 1, SPIRAL: 2, DNA: 3, TORUS: 4, SPHERE: 5, LOGO: 6,
+            CUBE: 7, KNOT: 8, HEART: 9, STAR: 10, CYLINDER: 11, CONE: 12,
+            MOBIUS: 13, FLOWER: 14, VORTEX: 15, EXPLOSION: 16,
+            PULSE: 17, TORNADO: 18, FOUNTAIN: 19, RIPPLE: 20, ORBIT: 21,
+            FIREWORK: 22, RAIN: 23, SNOW: 24, TUNNEL: 25, INFINITY: 26
+        };
+
+        let currentMode = MODE.WAVE;
+        let currentTarget = null;
+        const targetShapes = new Array(27);
+        const gridX = new Float32Array(particleCount);
+        const gridZ = new Float32Array(particleCount);
+
+        // ===== 기존 17개 함수 =====
+        function buildWaveGridTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const gridSize = Math.ceil(Math.sqrt(particleCount));
+            const spacing = 6;
+            let idx = 0;
+            for (let gz = 0; gz < gridSize && idx < particleCount; gz++) {
+                for (let gx = 0; gx < gridSize && idx < particleCount; gx++) {
+                    const i3 = idx * 3;
+                    const x = (gx - gridSize / 2) * spacing;
+                    const z = (gz - gridSize / 2) * spacing;
+                    arr[i3] = x;
+                    arr[i3 + 1] = 0;
+                    arr[i3 + 2] = z;
+                    gridX[idx] = x;
+                    gridZ[idx] = z;
+                    idx++;
+                }
+            }
+            return arr;
+        }
+
+        function buildLorenzTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const sigma = 10, rho = 28, beta = 8 / 3, dt = 0.01;
+            let x = 0.1, y = 0, z = 0;
+            const skip = 1000;
+            const pts = [];
+            for (let i = 0; i < particleCount + skip; i++) {
+                const dx = sigma * (y - x);
+                const dy = x * (rho - z) - y;
+                const dz = x * y - beta * z;
+                x += dx * dt; y += dy * dt; z += dz * dt;
+                if (i > skip) pts.push(x, y, z);
+            }
+            const scale = 8.0;
+            for (let i = 0; i < particleCount; i++) {
+                const src = (i % (pts.length / 3)) * 3;
+                const i3 = i * 3;
+                arr[i3] = pts[src] * scale;
+                arr[i3 + 1] = pts[src + 1] * scale;
+                arr[i3 + 2] = pts[src + 2] * scale;
+            }
+            return arr;
+        }
+
+        function buildSpiralGalaxyTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const arms = 3;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const arm = i % arms;
+                const radius = Math.pow(Math.random(), 0.5) * 200;
+                const angle = (i / particleCount) * Math.PI * 8 + arm * (Math.PI * 2 / arms);
+                const spiral = radius * 0.02;
+                arr[i3] = radius * Math.cos(angle + spiral);
+                arr[i3 + 1] = (Math.random() - 0.5) * 20 * Math.exp(-radius / 100);
+                arr[i3 + 2] = radius * Math.sin(angle + spiral);
+            }
+            return arr;
+        }
+
+        function buildDNATarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const helixTurns = 12, height = 200, radius = 45;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = (i / particleCount) * Math.PI * helixTurns;
+                const strand = (i % 2 === 0) ? 0 : Math.PI;
+                arr[i3] = radius * Math.cos(t + strand) + (Math.random() - 0.5) * 5;
+                arr[i3 + 1] = (i / particleCount - 0.5) * height + (Math.random() - 0.5) * 5;
+                arr[i3 + 2] = radius * Math.sin(t + strand) + (Math.random() - 0.5) * 5;
+            }
+            return arr;
+        }
+
+        function buildTorusTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const majorRadius = 120, minorRadius = 45;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const u = (i / particleCount) * Math.PI * 2;
+                const v = Math.random() * Math.PI * 2;
+                arr[i3] = (majorRadius + minorRadius * Math.cos(v)) * Math.cos(u);
+                arr[i3 + 1] = minorRadius * Math.sin(v);
+                arr[i3 + 2] = (majorRadius + minorRadius * Math.cos(v)) * Math.sin(u);
+            }
+            return arr;
+        }
+
+        function buildSphereTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const radius = 150;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const theta = Math.random() * Math.PI * 2;
+                const r = radius + Math.random() * 20;
+                arr[i3] = r * Math.sin(phi) * Math.cos(theta);
+                arr[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                arr[i3 + 2] = r * Math.cos(phi);
+            }
+            return arr;
+        }
+
+        function buildLogoTarget(callback) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 800; canvas.height = 200;
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 100px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('BeccoCRO', canvas.width / 2, canvas.height / 2);
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const points = [];
+            for (let y = 0; y < canvas.height; y += 3) {
+                for (let x = 0; x < canvas.width; x += 3) {
+                    if (imgData[(y * canvas.width + x) * 4 + 3] > 128) {
+                        points.push({ x: x - canvas.width / 2, y: y - canvas.height / 2 });
+                    }
+                }
+            }
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const p = points[i % points.length];
+                arr[i3] = p.x * 0.8;
+                arr[i3 + 1] = -p.y * 0.8;
+                arr[i3 + 2] = (Math.random() - 0.5) * 30;
+            }
+            callback(arr);
+        }
+
+        function buildCubeTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const size = 200;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const face = Math.floor(Math.random() * 6);
+                const u = (Math.random() - 0.5) * size;
+                const v = (Math.random() - 0.5) * size;
+                switch (face) {
+                    case 0: arr[i3] = u; arr[i3 + 1] = v; arr[i3 + 2] = size / 2; break;
+                    case 1: arr[i3] = u; arr[i3 + 1] = v; arr[i3 + 2] = -size / 2; break;
+                    case 2: arr[i3] = u; arr[i3 + 1] = size / 2; arr[i3 + 2] = v; break;
+                    case 3: arr[i3] = u; arr[i3 + 1] = -size / 2; arr[i3 + 2] = v; break;
+                    case 4: arr[i3] = size / 2; arr[i3 + 1] = u; arr[i3 + 2] = v; break;
+                    case 5: arr[i3] = -size / 2; arr[i3 + 1] = u; arr[i3 + 2] = v; break;
+                }
+            }
+            return arr;
+        }
+
+        function buildTrefoilKnotTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const scale = 50;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = (i / particleCount) * Math.PI * 2;
+                arr[i3] = scale * (Math.sin(t) + 2 * Math.sin(2 * t));
+                arr[i3 + 1] = scale * (Math.cos(t) - 2 * Math.cos(2 * t));
+                arr[i3 + 2] = scale * (-Math.sin(3 * t));
+            }
+            return arr;
+        }
+
+        function buildHeartTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const scale = 15;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = (i / particleCount) * Math.PI * 2;
+                arr[i3] = scale * 16 * Math.pow(Math.sin(t), 3);
+                arr[i3 + 1] = scale * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                arr[i3 + 2] = (Math.random() - 0.5) * 40;
+            }
+            return arr;
+        }
+
+        function buildStarTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const points = 5, outerRadius = 150, innerRadius = 60;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const angle = (i / particleCount) * Math.PI * 2;
+                const pointIndex = Math.floor((angle / (Math.PI * 2)) * points * 2);
+                const radius = (pointIndex % 2 === 0 ? outerRadius : innerRadius) + (Math.random() - 0.5) * 20;
+                arr[i3] = radius * Math.cos(angle);
+                arr[i3 + 1] = radius * Math.sin(angle);
+                arr[i3 + 2] = (Math.random() - 0.5) * 30;
+            }
+            return arr;
+        }
+
+        function buildCylinderTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const radius = 80, height = 200;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const theta = Math.random() * Math.PI * 2;
+                arr[i3] = radius * Math.cos(theta);
+                arr[i3 + 1] = (Math.random() - 0.5) * height;
+                arr[i3 + 2] = radius * Math.sin(theta);
+            }
+            return arr;
+        }
+
+        function buildConeTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const baseRadius = 120, height = 200;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = i / particleCount;
+                const y = (t - 0.5) * height;
+                const radius = baseRadius * (1 - t);
+                const theta = Math.random() * Math.PI * 2;
+                arr[i3] = radius * Math.cos(theta);
+                arr[i3 + 1] = y;
+                arr[i3 + 2] = radius * Math.sin(theta);
+            }
+            return arr;
+        }
+
+        function buildMobiusStripTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const R = 100;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const u = (i / particleCount) * Math.PI * 2;
+                const v = (Math.random() - 0.5) * 60;
+                arr[i3] = (R + v * Math.cos(u / 2)) * Math.cos(u);
+                arr[i3 + 1] = (R + v * Math.cos(u / 2)) * Math.sin(u);
+                arr[i3 + 2] = v * Math.sin(u / 2);
+            }
+            return arr;
+        }
+
+        function buildFlowerTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const petals = 8;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = (i / particleCount) * Math.PI * 2;
+                const r = 80 * Math.abs(Math.cos(petals * t / 2));
+                arr[i3] = r * Math.cos(t);
+                arr[i3 + 1] = r * Math.sin(t);
+                arr[i3 + 2] = (Math.random() - 0.5) * 30;
+            }
+            return arr;
+        }
+
+        function buildVortexTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = (i / particleCount) * Math.PI * 10;
+                const radius = t * 8;
+                arr[i3] = radius * Math.cos(t);
+                arr[i3 + 1] = (i / particleCount - 0.5) * 300;
+                arr[i3 + 2] = radius * Math.sin(t);
+            }
+            return arr;
+        }
+
+        function buildExplosionTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const theta = Math.random() * Math.PI * 2;
+                const r = Math.pow(Math.random(), 0.3) * 250;
+                arr[i3] = r * Math.sin(phi) * Math.cos(theta);
+                arr[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                arr[i3 + 2] = r * Math.cos(phi);
+            }
+            return arr;
+        }
+
+        // ===== 신규 10개 애니메이션 효과 =====
+        function buildPulseWaveTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const layer = Math.floor(i / (particleCount / 5));
+                const radius = 30 + layer * 30;
+                const theta = (i / particleCount) * Math.PI * 2 * 5;
+                arr[i3] = radius * Math.cos(theta);
+                arr[i3 + 1] = radius * Math.sin(theta);
+                arr[i3 + 2] = 0;
+                velocities[i3] = layer; // 레이어 정보 저장
+            }
+            return arr;
+        }
+
+        function buildTornadoTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = i / particleCount;
+                const y = (t - 0.5) * 300;
+                const radius = 20 + Math.abs(y) * 0.3;
+                const angle = t * Math.PI * 10;
+                arr[i3] = radius * Math.cos(angle);
+                arr[i3 + 1] = y;
+                arr[i3 + 2] = radius * Math.sin(angle);
+                velocities[i3] = t; // 높이 정보
+            }
+            return arr;
+        }
+
+        function buildFountainTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const angle = (Math.random() - 0.5) * Math.PI * 0.5;
+                const speed = 50 + Math.random() * 100;
+                arr[i3] = 0;
+                arr[i3 + 1] = -150;
+                arr[i3 + 2] = 0;
+                velocities[i3] = Math.cos(angle) * speed;
+                velocities[i3 + 1] = Math.sin(angle) * speed + 50;
+                velocities[i3 + 2] = (Math.random() - 0.5) * 30;
+            }
+            return arr;
+        }
+
+        function buildRippleTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const angle = (i / particleCount) * Math.PI * 2;
+                const radius = (i % 100) * 2;
+                arr[i3] = radius * Math.cos(angle);
+                arr[i3 + 1] = 0;
+                arr[i3 + 2] = radius * Math.sin(angle);
+                velocities[i3] = i % 100; // 링 번호
+            }
+            return arr;
+        }
+
+        function buildOrbitTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const orbits = 5;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const orbit = i % orbits;
+                const radius = 40 + orbit * 30;
+                const angle = (i / particleCount) * Math.PI * 2;
+                arr[i3] = radius * Math.cos(angle);
+                arr[i3 + 1] = radius * Math.sin(angle);
+                arr[i3 + 2] = (orbit - orbits / 2) * 20;
+                velocities[i3] = orbit; // 궤도 번호
+            }
+            return arr;
+        }
+
+        function buildFireworkTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const bursts = 8;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const burst = i % bursts;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const theta = Math.random() * Math.PI * 2;
+                const r = Math.random() * 80;
+                const offset = burst * 50 - (bursts * 50) / 2;
+                arr[i3] = r * Math.sin(phi) * Math.cos(theta) + offset;
+                arr[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                arr[i3 + 2] = r * Math.cos(phi);
+                velocities[i3] = burst;
+            }
+            return arr;
+        }
+
+        function buildRainTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                arr[i3] = (Math.random() - 0.5) * 400;
+                arr[i3 + 1] = Math.random() * 400 - 200;
+                arr[i3 + 2] = (Math.random() - 0.5) * 400;
+                velocities[i3 + 1] = -50 - Math.random() * 50; // 낙하 속도
+            }
+            return arr;
+        }
+
+        function buildSnowTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                arr[i3] = (Math.random() - 0.5) * 400;
+                arr[i3 + 1] = Math.random() * 400 - 200;
+                arr[i3 + 2] = (Math.random() - 0.5) * 400;
+                velocities[i3] = (Math.random() - 0.5) * 10; // 바람
+                velocities[i3 + 1] = -10 - Math.random() * 10; // 느린 낙하
+                velocities[i3 + 2] = (Math.random() - 0.5) * 10;
+            }
+            return arr;
+        }
+
+        function buildTunnelTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const z = (i / particleCount) * 500 - 250;
+                const radius = 80 + Math.abs(z) * 0.2;
+                const angle = (i / particleCount) * Math.PI * 20;
+                arr[i3] = radius * Math.cos(angle);
+                arr[i3 + 1] = radius * Math.sin(angle);
+                arr[i3 + 2] = z;
+                velocities[i3 + 2] = 1; // Z축 이동
+            }
+            return arr;
+        }
+
+        function buildInfinityTarget() {
+            const arr = new Float32Array(particleCount * 3);
+            const scale = 80;
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const t = (i / particleCount) * Math.PI * 2;
+                arr[i3] = scale * Math.cos(t) / (1 + Math.sin(t) * Math.sin(t));
+                arr[i3 + 1] = scale * Math.sin(t) * Math.cos(t) / (1 + Math.sin(t) * Math.sin(t));
+                arr[i3 + 2] = (Math.random() - 0.5) * 20;
+            }
+            return arr;
+        }
+
+        // 초기화
+        targetShapes[MODE.WAVE] = buildWaveGridTarget();
+        targetShapes[MODE.LORENZ] = buildLorenzTarget();
+        targetShapes[MODE.SPIRAL] = buildSpiralGalaxyTarget();
+        targetShapes[MODE.DNA] = buildDNATarget();
+        targetShapes[MODE.TORUS] = buildTorusTarget();
+        targetShapes[MODE.SPHERE] = buildSphereTarget();
+        targetShapes[MODE.CUBE] = buildCubeTarget();
+        targetShapes[MODE.KNOT] = buildTrefoilKnotTarget();
+        targetShapes[MODE.HEART] = buildHeartTarget();
+        targetShapes[MODE.STAR] = buildStarTarget();
+        targetShapes[MODE.CYLINDER] = buildCylinderTarget();
+        targetShapes[MODE.CONE] = buildConeTarget();
+        targetShapes[MODE.MOBIUS] = buildMobiusStripTarget();
+        targetShapes[MODE.FLOWER] = buildFlowerTarget();
+        targetShapes[MODE.VORTEX] = buildVortexTarget();
+        targetShapes[MODE.EXPLOSION] = buildExplosionTarget();
+        targetShapes[MODE.PULSE] = buildPulseWaveTarget();
+        targetShapes[MODE.TORNADO] = buildTornadoTarget();
+        targetShapes[MODE.FOUNTAIN] = buildFountainTarget();
+        targetShapes[MODE.RIPPLE] = buildRippleTarget();
+        targetShapes[MODE.ORBIT] = buildOrbitTarget();
+        targetShapes[MODE.FIREWORK] = buildFireworkTarget();
+        targetShapes[MODE.RAIN] = buildRainTarget();
+        targetShapes[MODE.SNOW] = buildSnowTarget();
+        targetShapes[MODE.TUNNEL] = buildTunnelTarget();
+        targetShapes[MODE.INFINITY] = buildInfinityTarget();
+
+        buildLogoTarget((logoArr) => {
+            targetShapes[MODE.LOGO] = logoArr;
+            if (currentMode === MODE.LOGO) currentTarget = logoArr;
+        });
+
+        basePositions.set(targetShapes[MODE.WAVE]);
+        renderPositions.set(targetShapes[MODE.WAVE]);
+        geometry.attributes.position.needsUpdate = true;
+        currentTarget = targetShapes[MODE.WAVE];
+
+        function setMode(mode) {
+            currentMode = mode;
+            currentTarget = targetShapes[mode];
+
+            const captions = {
+                [MODE.WAVE]: 'Wave Grid – 데이터 파형이 흐르는 그리드',
+                [MODE.LORENZ]: 'Lorenz Attractor – 혼돈 이론의 프랙탈',
+                [MODE.SPIRAL]: 'Spiral Galaxy – 나선 은하',
+                [MODE.DNA]: 'DNA Helix – 이중 나선',
+                [MODE.TORUS]: 'Torus – 도넛 형태',
+                [MODE.SPHERE]: 'Sphere – 구형 확산',
+                [MODE.LOGO]: 'BeccoCRO Logo – 브랜드 로고',
+                [MODE.CUBE]: 'Cube – 정육면체',
+                [MODE.KNOT]: 'Trefoil Knot – 삼엽매듭',
+                [MODE.HEART]: 'Heart – 하트 모양',
+                [MODE.STAR]: 'Star – 5각 별',
+                [MODE.CYLINDER]: 'Cylinder – 원기둥',
+                [MODE.CONE]: 'Cone – 원뿔',
+                [MODE.MOBIUS]: 'Möbius Strip – 뫼비우스의 띠',
+                [MODE.FLOWER]: 'Flower – 8개 꽃잎',
+                [MODE.VORTEX]: 'Vortex – 소용돌이',
+                [MODE.EXPLOSION]: 'Explosion – 폭발 확산',
+                [MODE.PULSE]: 'Pulse Wave – 맥동하는 파동 (애니메이션)',
+                [MODE.TORNADO]: 'Tornado – 회전하는 토네이도 (애니메이션)',
+                [MODE.FOUNTAIN]: 'Fountain – 분수 효과 (물리 시뮬레이션)',
+                [MODE.RIPPLE]: 'Ripple – 물결 파문 (확장 애니메이션)',
+                [MODE.ORBIT]: 'Orbit – 궤도 회전 (행성계)',
+                [MODE.FIREWORK]: 'Firework – 불꽃놀이 (다중 폭발)',
+                [MODE.RAIN]: 'Rain – 비 내리는 효과 (낙하)',
+                [MODE.SNOW]: 'Snow – 눈 내리는 효과 (부드러운 낙하)',
+                [MODE.TUNNEL]: 'Tunnel – 터널 통과 (깊이 효과)',
+                [MODE.INFINITY]: 'Infinity – 무한대 기호 (∞)'
+            };
+
+            captionEl.textContent = captions[mode];
+            setActiveButton(mode);
+        }
+
+        function setActiveButton(mode) {
+            const buttonIds = [
+                'btn-wave', 'btn-lorenz', 'btn-spiral', 'btn-dna', 'btn-torus', 'btn-sphere', 'btn-logo',
+                'btn-cube', 'btn-knot', 'btn-heart', 'btn-star', 'btn-cylinder', 'btn-cone', 'btn-mobius',
+                'btn-flower', 'btn-vortex', 'btn-explosion', 'btn-pulse', 'btn-tornado', 'btn-fountain',
+                'btn-ripple', 'btn-orbit', 'btn-firework', 'btn-rain', 'btn-snow', 'btn-tunnel', 'btn-infinity'
+            ];
+            buttonIds.forEach((id, index) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (index === mode) el.classList.add('active');
+                    else el.classList.remove('active');
+                }
+            });
+        }
+
+        // 버튼 이벤트
+        document.getElementById('btn-wave').addEventListener('click', () => setMode(MODE.WAVE));
+        document.getElementById('btn-lorenz').addEventListener('click', () => setMode(MODE.LORENZ));
+        document.getElementById('btn-spiral').addEventListener('click', () => setMode(MODE.SPIRAL));
+        document.getElementById('btn-dna').addEventListener('click', () => setMode(MODE.DNA));
+        document.getElementById('btn-torus').addEventListener('click', () => setMode(MODE.TORUS));
+        document.getElementById('btn-sphere').addEventListener('click', () => setMode(MODE.SPHERE));
+        document.getElementById('btn-logo').addEventListener('click', () => {
+            if (targetShapes[MODE.LOGO]) setMode(MODE.LOGO);
+        });
+        document.getElementById('btn-cube').addEventListener('click', () => setMode(MODE.CUBE));
+        document.getElementById('btn-knot').addEventListener('click', () => setMode(MODE.KNOT));
+        document.getElementById('btn-heart').addEventListener('click', () => setMode(MODE.HEART));
+        document.getElementById('btn-star').addEventListener('click', () => setMode(MODE.STAR));
+        document.getElementById('btn-cylinder').addEventListener('click', () => setMode(MODE.CYLINDER));
+        document.getElementById('btn-cone').addEventListener('click', () => setMode(MODE.CONE));
+        document.getElementById('btn-mobius').addEventListener('click', () => setMode(MODE.MOBIUS));
+        document.getElementById('btn-flower').addEventListener('click', () => setMode(MODE.FLOWER));
+        document.getElementById('btn-vortex').addEventListener('click', () => setMode(MODE.VORTEX));
+        document.getElementById('btn-explosion').addEventListener('click', () => setMode(MODE.EXPLOSION));
+        document.getElementById('btn-pulse').addEventListener('click', () => setMode(MODE.PULSE));
+        document.getElementById('btn-tornado').addEventListener('click', () => setMode(MODE.TORNADO));
+        document.getElementById('btn-fountain').addEventListener('click', () => setMode(MODE.FOUNTAIN));
+        document.getElementById('btn-ripple').addEventListener('click', () => setMode(MODE.RIPPLE));
+        document.getElementById('btn-orbit').addEventListener('click', () => setMode(MODE.ORBIT));
+        document.getElementById('btn-firework').addEventListener('click', () => setMode(MODE.FIREWORK));
+        document.getElementById('btn-rain').addEventListener('click', () => setMode(MODE.RAIN));
+        document.getElementById('btn-snow').addEventListener('click', () => setMode(MODE.SNOW));
+        document.getElementById('btn-tunnel').addEventListener('click', () => setMode(MODE.TUNNEL));
+        document.getElementById('btn-infinity').addEventListener('click', () => setMode(MODE.INFINITY));
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const t = clock.getElapsedTime();
+
+            const R = 50;
+            camera.position.x = Math.sin(t * 0.1) * R;
+            camera.position.y = Math.cos(t * 0.08) * R * 0.5;
+            camera.lookAt(0, 0, 0);
+
+            if (currentTarget) {
+                const lerpSpeed = 0.06;
+                for (let i = 0; i < basePositions.length; i++) {
+                    basePositions[i] += (currentTarget[i] - basePositions[i]) * lerpSpeed;
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                let x = basePositions[i3];
+                let y = basePositions[i3 + 1];
+                let z = basePositions[i3 + 2];
+
+                // 모드별 애니메이션
+                switch (currentMode) {
+                    case MODE.WAVE:
+                        const wave = Math.sin(0.08 * gridX[i] + t * 1.5) * 5 +
+                            Math.cos(0.08 * gridZ[i] - t * 1.8) * 5;
+                        y += wave;
+                        break;
+                    case MODE.PULSE:
+                        const pulseScale = 1 + Math.sin(t * 3 - velocities[i3] * 0.5) * 0.3;
+                        x *= pulseScale;
+                        y *= pulseScale;
+                        break;
+                    case MODE.TORNADO:
+                        const tornadoAngle = t * 2 + velocities[i3] * Math.PI * 10;
+                        const tx = x * Math.cos(tornadoAngle) - z * Math.sin(tornadoAngle);
+                        const tz = x * Math.sin(tornadoAngle) + z * Math.cos(tornadoAngle);
+                        x = tx; z = tz;
+                        break;
+                    case MODE.FOUNTAIN:
+                        y = basePositions[i3 + 1] + velocities[i3 + 1] * (t % 3);
+                        y -= 4.9 * Math.pow(t % 3, 2);
+                        if (y < -150) y = -150;
+                        break;
+                    case MODE.RIPPLE:
+                        const rippleWave = Math.sin(velocities[i3] * 0.3 - t * 2) * 15;
+                        y += rippleWave;
+                        break;
+                    case MODE.ORBIT:
+                        const orbitSpeed = 0.5 + velocities[i3] * 0.2;
+                        const orbitAngle = t * orbitSpeed;
+                        const ox = x * Math.cos(orbitAngle) - y * Math.sin(orbitAngle);
+                        const oy = x * Math.sin(orbitAngle) + y * Math.cos(orbitAngle);
+                        x = ox; y = oy;
+                        break;
+                    case MODE.FIREWORK:
+                        const burstPhase = (t * 0.5 + velocities[i3] * 0.3) % 2;
+                        const burstScale = burstPhase < 1 ? burstPhase : 2 - burstPhase;
+                        x *= burstScale;
+                        y *= burstScale;
+                        z *= burstScale;
+                        break;
+                    case MODE.RAIN:
+                        y = basePositions[i3 + 1] + velocities[i3 + 1] * (t % 4);
+                        if (y < -200) y += 400;
+                        break;
+                    case MODE.SNOW:
+                        y = basePositions[i3 + 1] + velocities[i3 + 1] * (t % 8);
+                        x += Math.sin(t + i) * 2;
+                        if (y < -200) y += 400;
+                        break;
+                    case MODE.TUNNEL:
+                        z = basePositions[i3 + 2] + (t * 50) % 500;
+                        if (z > 250) z -= 500;
+                        break;
+                }
+
+                renderPositions[i3] = x;
+                renderPositions[i3 + 1] = y;
+                renderPositions[i3 + 2] = z;
+            }
+
+            geometry.attributes.position.needsUpdate = true;
+            points.rotation.y += 0.002;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+
+</html>
