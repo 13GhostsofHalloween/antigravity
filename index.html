@@ -8,13 +8,16 @@
         content="BeccoCRO - 임상시험의 모든 단계를 지원하는 전문 CRO 기업. Medical Writing, Regulatory Affairs 전문 서비스 제공">
     <title>BeccoCRO - Clinical Research Organization | 임상시험 전문 CRO</title>
     <link rel="stylesheet" href="index.css">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
         rel="stylesheet">
+
+    <!-- Debug Guide Style -->
     <style>
-        /* 디버깅용 스타일: 섹션 구획 및 이름 표시 */
         nav,
         section,
         footer {
@@ -22,7 +25,6 @@
             position: relative !important;
         }
 
-        /* 섹션 이름 라벨 공통 스타일 */
         nav::before,
         section::before,
         footer::before {
@@ -35,10 +37,8 @@
             top: 0;
             left: 0;
             z-index: 9999;
-            pointer-events: none;
         }
 
-        /* 각 섹션별 이름 지정 */
         nav::before {
             content: "Navigation";
         }
@@ -67,7 +67,6 @@
             content: "Footer";
         }
 
-        /* Hero 영역 구분 가이드 */
         .hero-text {
             border: 2px dashed #ff4444 !important;
             position: relative;
@@ -84,11 +83,11 @@
             font-size: 12px;
             font-weight: bold;
             border-radius: 4px 4px 0 0;
-            z-index: 10000;
         }
 
         .hero-visual {
             border: 2px dashed #4444ff !important;
+            position: relative;
         }
 
         .hero-visual::before {
@@ -102,18 +101,19 @@
             font-size: 12px;
             font-weight: bold;
             border-radius: 4px 4px 0 0;
-            z-index: 10000;
         }
     </style>
 </head>
 
 <body>
+
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
             <div class="logo">
                 <span class="logo-text">Becco<span class="logo-highlight">CRO</span></span>
             </div>
+
             <ul class="nav-menu" id="nav-menu">
                 <li><a href="#home" class="nav-link">홈</a></li>
                 <li><a href="#about" class="nav-link">회사소개</a></li>
@@ -121,62 +121,23 @@
                 <li><a href="#features" class="nav-link">강점</a></li>
                 <li><a href="#contact" class="nav-link">문의하기</a></li>
             </ul>
-            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle"
+                aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-background"></div>
-        <div class="container hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">
-                    <span class="title-line">임상시험의 미래를</span>
-                    <span class="title-line gradient-text">함께 만들어갑니다</span>
-                </h1>
-                <p class="hero-subtitle">
-                    BeccoCRO는 임상시험의 모든 단계를 지원하는 전문 CRO입니다.<br>
-                    Medical Writing과 Regulatory Affairs 분야에서 최고의 전문성을 제공합니다.
-                </p>
-                <div class="hero-buttons">
-                    <a href="#services" class="btn btn-primary">서비스 알아보기</a>
-                    <a href="#contact" class="btn btn-secondary">문의하기</a>
-                </div>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="floating-card card-1">
-                <div class="card-icon">📊</div>
-                <div class="card-text">Data Analysis</div>
-            </div>
-            <div class="floating-card card-2">
-                <div class="card-icon">📝</div>
-                <div class="card-text">Medical Writing</div>
-            </div>
-            <div class="floating-card card-3">
-                <div class="card-icon">⚖️</div>
-                <div class="card-text">Regulatory Affairs</div>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <span>Scroll Down</span>
-            <div class="scroll-arrow"></div>
-        </div>
-    </section>
-
     <!-- About Section -->
+
     <section class="about" id="about">
         <div class="container">
+
             <div class="section-header">
                 <span class="section-label">COMPANY</span>
                 <h2 class="section-title">회사소개</h2>
             </div>
 
-            <!-- Company Overview -->
+            <!-- 기업개요 -->
             <div class="company-overview">
                 <div class="overview-content">
                     <h3 class="subsection-title">기업개요</h3>
@@ -186,105 +147,131 @@
                 </div>
             </div>
 
-            <!-- CEO Message -->
+            <!-- CEO MESSAGE -->
             <div class="ceo-message">
                 <div class="ceo-content">
+
+                    <!-- CEO PHOTO -->
                     <div class="ceo-image-wrapper">
-                        <div class="ceo-image"></div>
+                        <img src="https://files.catbox.moe/joiob8.png" alt="대표이사 정우진" class="ceo-image">
                     </div>
-                    <div class="ceo-text">
-                        <h3 class="ceo-title">CEO 인사말</h3>
-                        <p class="ceo-greeting">
-                            안녕하십니까, BeccoCRO 대표이사 정우진입니다.
-                        </p>
+
+                    <!-- CEO TEXT -->
+                    <div class="ceo-text-wrapper">
+                        <h3 class="ceo-title">대표이사 인사말</h3>
+
                         <p class="ceo-message-text">
-                            많은 중소기업과 벤처 기업들은 임상시험 규제의 변화, 높은 비용, 그리고 예측할 수 없는 실패의 위험 속에서 그 어느 때보다 많은 어려움을 겪고 있습니다. 이러한
-                            현실에 직면한 기업들이 마주하는 장애물을 우리는 단순히 외면하지 않습니다. 오히려 그들 각자의 상황을 깊이 이해하고, 실질적이고 혁신적인 해결책을 제공하는 것이
-                            우리의 사명입니다.
+                            많은 중소기업과 벤처 기업들은 임상시험 규제의 변화, 높은 비용, 그리고 예측할 수 없는 실패의 위험 속에서 많은 어려움을 겪고 있습니다.
+                            이러한 현실에 직면한 기업들의 장애물을 우리는 단순히 외면하지 않습니다.
                         </p>
+
                         <p class="ceo-message-text">
-                            앞으로도 고객의 성공을 최우선으로 삼아 지속적인 도전과 혁신을 통해 바이오 헬스케어 분야에서 더욱 큰 가치를 창출해 나갈 것입니다. 하지만 그 무엇보다 중요한 것은
-                            이 모든 여정을 함께 해온 임직원들의 열정과 헌신입니다. 그들이 보여준 끊임없는 노력과 협력으로 오늘의 성장을 이룰 수 있었음에 깊은 감사의 마음을 전하고 싶습니다.
+                            우리는 각 기업의 상황을 깊이 이해하고, 실질적이고 혁신적인 해결책을 제공하는 것을 사명으로 합니다. 고객의 성공을 중심에 두고,
+                            지속적인 도전과 혁신을 통해 바이오 헬스케어 분야의 발전을 이끌어 나가겠습니다.
                         </p>
+
                         <p class="ceo-message-text">
-                            모든 구성원과의 신뢰와 협력을 바탕으로 벡코씨알오는 업계를 넘어서는 변화를 이끌어가고, 고객과 함께 성장하는 더 나은 미래를 만들어 나갈 것입니다.
+                            이 모든 성장은 임직원들의 열정과 헌신 덕분입니다. 앞으로도 신뢰와 협력을 바탕으로 더 나은 미래를 만들겠습니다.
                         </p>
+
                         <div class="ceo-signature">
                             <span class="signature-name">대표이사 정우진</span>
                         </div>
                     </div>
+
                 </div>
             </div>
 
-            <!-- Company History -->
-            <div class="history-section">
+        </div>
+
+        <!-- Company History -->
+        <section class="history-section">
+            <div class="container">
                 <h3 class="subsection-title">연혁</h3>
+
                 <div class="timeline">
+
+                    <!-- 2026 -->
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
-                            <span class="timeline-year">2024</span>
+                            <span class="timeline-year">2026</span>
                             <h4 class="timeline-title">새로운 도약</h4>
                             <p class="timeline-description">글로벌 제약사와 전략적 파트너십 체결</p>
                         </div>
                     </div>
+
+                    <!-- 2025 -->
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-year">2025</span>
+                            <h4 class="timeline-title">조직·문화</h4>
+                            <p class="timeline-description">
+                                <b>11월</b> 일·생활 균형 우수기업 인증
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 2024 -->
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-year">2024</span>
+                            <h4 class="timeline-title">조직 확장 & 글로벌 협력</h4>
+                            <p class="timeline-description">
+                                <b>01월</b> RJR-Consulting·GCT 글로벌 협력<br><br>
+                                <b>02월</b> RA 전담부서 신설<br><br>
+                                <b>05월</b> KoNECT 자율등록증 획득<br><br>
+                                <b>07월</b> 일·생활 균형 캠페인 참여기업 선정<br><br>
+                                <b>11월</b> 여가친화 인증 획득
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 2023 -->
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <span class="timeline-year">2023</span>
-                            <h4 class="timeline-title">사업 확장</h4>
-                            <p class="timeline-description">Regulatory Affairs 부서 신설</p>
+                            <h4 class="timeline-title">연구·인증·기술 성장</h4>
+
+                            <p class="timeline-description">
+                                <b>01월</b> 엑소좀산업협의회 가입 / 구성원 212.5% 증가<br><br>
+                                <b>03월</b> 기업부설연구소 설립<br><br>
+                                <b>04월</b> 성과공유기업 인증 / KOITA 가입<br><br>
+                                <b>05월</b> 계약액 120% 달성<br><br>
+                                <b>07월</b> 본사 이전 · ISO 인증 · 벤처기업 인증<br><br>
+                                <b>08월</b> 연성대학교 산학교류협약<br><br>
+                                <b>09월</b> MDCS · AGUA HEALTH 협약<br><br>
+                                <b>12월</b> 가족친화기업 인증
+                            </p>
                         </div>
                     </div>
+
+                    <!-- 2022 -->
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <span class="timeline-year">2022</span>
-                            <h4 class="timeline-title">성장</h4>
-                            <p class="timeline-description">Medical Writing 전문 인력 확충</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <span class="timeline-year">2020</span>
                             <h4 class="timeline-title">설립</h4>
-                            <p class="timeline-description">BeccoCRO 법인 설립</p>
+
+                            <p class="timeline-description">
+                                <b>04월</b> 벡코씨알오㈜ 설립 / CRO 서비스 개시<br><br>
+                                <b>06월</b> 더존 Smart A 10 도입<br><br>
+                                <b>07월</b> CQA 협약 / 메디세이프 PV 협약<br><br>
+                                <b>08월</b> K-Pharm RA 협약 / 임상시험 10억 수주<br><br>
+                                <b>11월</b> 기술역량 우수기업 인증<br><br>
+                                <b>12월</b> 건양대학교 산학교류협약 체결
+                            </p>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Mission, Vision, Core Values -->
-            <div class="mvc-section">
-                <div class="mvc-grid">
-                    <div class="mvc-card">
-                        <div class="mvc-icon">🎯</div>
-                        <h3 class="mvc-title">Mission</h3>
-                        <p class="mvc-description">
-                            임상시험의 전 과정에서 최고 수준의 전문 서비스를 제공하여 고객사의 신약 개발 성공을 지원합니다.
-                        </p>
-                    </div>
-                    <div class="mvc-card">
-                        <div class="mvc-icon">🔭</div>
-                        <h3 class="mvc-title">Vision</h3>
-                        <p class="mvc-description">
-                            아시아 태평양 지역을 대표하는 글로벌 CRO로 성장하여 인류 건강 증진에 기여합니다.
-                        </p>
-                    </div>
-                    <div class="mvc-card">
-                        <div class="mvc-icon">💎</div>
-                        <h3 class="mvc-title">Core Values</h3>
-                        <ul class="mvc-list">
-                            <li><strong>전문성</strong> - 최고 수준의 전문 지식</li>
-                            <li><strong>신뢰성</strong> - 투명하고 정직한 업무 수행</li>
-                            <li><strong>혁신</strong> - 끊임없는 발전과 개선</li>
-                        </ul>
-                    </div>
                 </div>
             </div>
-        </div>
+        </section>
     </section>
+
 
     <!-- Services Section -->
     <section class="services" id="services">
@@ -456,41 +443,6 @@
                         <p class="info-text">서울특별시 강남구<br>테헤란로 123</p>
                     </div>
                 </div>
-
-                <div class="contact-form-wrapper">
-                    <form class="contact-form">
-                        <div class="form-group">
-                            <label class="form-label">이름</label>
-                            <input type="text" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">회사명</label>
-                            <input type="text" class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">이메일</label>
-                            <input type="email" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">전화번호</label>
-                            <input type="tel" class="form-input">
-                        </div>
-                        <div class="form-group full-width">
-                            <label class="form-label">문의 유형</label>
-                            <select class="form-select">
-                                <option>Medical Writing</option>
-                                <option>Regulatory Affairs</option>
-                                <option>Clinical Consulting</option>
-                                <option>기타</option>
-                            </select>
-                        </div>
-                        <div class="form-group full-width">
-                            <label class="form-label">문의 내용</label>
-                            <textarea class="form-textarea" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-submit">문의하기</button>
-                    </form>
-                </div>
             </div>
         </div>
     </section>
@@ -535,6 +487,7 @@
     </footer>
 
     <script src="script.js"></script>
+    <script type="module" src="hero-particles.js"></script>
 </body>
 
 </html>
